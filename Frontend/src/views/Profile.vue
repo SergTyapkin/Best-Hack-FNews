@@ -1,227 +1,174 @@
-<style lang="stylus">
-  size = 96px
-  .profile
-    .avatar
-      position relative
-      width size
-      margin 0 auto
-      margin-bottom 5px
-      .cover
-        position absolute
-        top 0
-        width size
-        height size
-        line-height size
-        border-radius (size / 2 - 1) // to fix avatar outside of div
-        margin 0 auto
-        color textColor1
-        background-color clBackground
-        opacity 0
-        cursor pointer
-        transition all 0.2s ease
-      .cover:hover
-        opacity 0.9
-      img
-        border-radius size
-        width size
-        height size
+<style lang="stylus" scoped>
+@require '../styles/constants.styl'
+
+photo-size = 180px
+photo-column-width = 300px
+
+borderColorInputs = textColor5
+
+.profile-page
+  position relative
+  display flex
+  padding-right 60px
+  padding-bottom 20px
+
+.page-name
+  position absolute
+  top -40px
+  right 95px
+
+.photo-column
+  width photo-column-width
+.info-column
+  flex 1
+
+.photo-column
+  width photo-column-width
+  .photo
+    margin 0 auto
+    opacity 0.6
+    position relative
+    width photo-size
+    height photo-size
+    display flex
+    align-items center
+    justify-content center
+    img
+      width 50%
+  .photo::before
+    content ""
+    position absolute
+    inset 0
+    border-radius 50%
+    border 1px solid white
+
+
+.info-column
+  .title
+    margin-bottom 40px
+  .inputs
+    margin-left 30px
+    font-size 14px
+    max-width 500px
+    > div
+      display flex
+      align-items center
+      margin-bottom 20px
+      label
+        width 150px
+      input
+        all unset
+        flex 1
+        height 35px
+        padding 5px 10px
+        box-sizing border-box
+        background mix(bgColor, transparent, 60%)
+        border 1px solid borderColorInputs
+        border-radius radiusS
+
+    button
+      all unset
+      margin-top 20px
+      float right
+      width 120px
+      background bgColor3
+      padding 7px
+      box-sizing border-box
+      text-align center
+      cursor pointer
+      border-radius radiusS
 </style>
 
 <template>
-  <Logo />
-  <div class="profile">
-      <div class="standalone-form profile">
-          <router-link to="/" class="back-btn">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-arrow-left" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z"/></svg>
-          </router-link>
+  <BluredBG></BluredBG>
 
-          <div class="title">
-              <div class="avatar">
-                  <img v-if="avatarUrl" :src="avatarUrl" alt="">
-                  <img v-else src="../images/cat_loading.gif" alt="">
-                  <div class="cover">
-                      Изменить
-                  </div>
-              </div>
-              <div class="primary">{{ username }}</div>
-          </div>
-          <div class="form">
-              <form novalidate>
-                  <input name="avatarDataURL" type="hidden">
+  <div class="profile-page">
+    <div class="page-name">Your profile</div>
 
-                  <div class="form-group">
-                    <label>ЛОГИН<span class="error-text"></span></label>
-                    <input name="username" type="text" class="form-control" :value="username" autocomplete="off" readonly>
-                  </div>
-
-                  <div class="form-group" :class="{ error: errorsInfo.fullname }" @input="errorsInfo.fullname = ''" @keydown.enter.prevent="updateUserInfo">
-                      <label>ПОЛНОЕ ИМЯ<span class="error-text">{{ errorsInfo.fullname }}</span></label>
-                      <input name="fullname" type="text" class="form-control" v-model="fullname" autocomplete="off">
-                  </div>
-
-                  <div class="form-group" :class="{ error: errorsInfo.email }" @input="errorsInfo.email = ''" @keydown.enter.prevent="updateUserInfo">
-                      <label>EMAIL<span class="error-text">{{ errorsInfo.email }}</span></label>
-                      <input name="reserveEmail" type="email" class="form-control" v-model="email" autocomplete="off">
-                      <!-- <div class="muted">Необходимо будет подтвердить на старом и новом ящиках</div> -->
-                  </div>
-
-                  <div class="form-group">
-                    <div class="btn" :class="{ 'btn-disabled': !enabledInfo}" @click="updateUserInfo">Сохранить</div>
-                  </div>
-
-                  <div class="roll-closed" ref="changePasswordFields" @keydown.enter.prevent="changePassword">
-                    <div class="form-group" :class="{ error: errorsPassword.oldPassword }" @input="errorsPassword.oldPassword = ''">
-                      <label>СТАРЫЙ ПАРОЛЬ<span class="error-text">{{ errorsPassword.oldPassword }}</span></label>
-                      <input name="oldPassword" type="password" class="form-control" v-model="oldPassword" autocomplete="off">
-                      <div class="muted">Если вы не задавали пароль - оставьте поле пустым</div>
-                    </div>
-                    <div class="form-group" :class="{ error: errorsPassword.newPassword }" @input="errorsPassword.newPassword = ''; errorsPassword.confirmPassword = ''">
-                      <label>НОВЫЙ ПАРОЛЬ<span class="error-text">{{ errorsPassword.newPassword }}</span></label>
-                      <input name="newPassword" type="password" class="form-control" v-model="newPassword" autocomplete="off">
-                    </div>
-                    <div class="form-group" :class="{ error: errorsPassword.confirmPassword }" @input="errorsPassword.newPassword = ''; errorsPassword.confirmPassword = ''">
-                      <label>ПОДТВЕРЖДЕНИЕ<span class="error-text">{{ errorsPassword.confirmPassword }}</span></label>
-                      <input name="newPassword" type="password" class="form-control" v-model="confirmPassword" autocomplete="off">
-                    </div>
-                  </div>
-
-                  <div class="form-group">
-                      <div class="btn" :class="{ 'btn-disabled': !enabledPassword}" @click="changePassword">Сменить пароль</div>
-                  </div>
-
-                  <div class="form-group">
-                      <div @click="signOut" class="btn btn-danger">Выйти</div>
-                  </div>
-              </form>
-          </div>
+    <div class="photo-column">
+      <div class="photo">
+        <img src="../res/favicon.ico" alt="Photo">
       </div>
+    </div>
+
+    <div class="info-column">
+      <div class="title">Personal information</div>
+      <div class="inputs">
+        <div><label>Username</label> <input v-model="user.username" type="text"/></div>
+        <div><label>First name</label> <input v-model="user.firstName" type="text"/></div>
+        <div><label>Last name</label> <input v-model="user.secondName" type="text"/></div>
+        <div><label>Email</label> <input v-model="user.email" type="text"/></div>
+        <div><label>Address</label> <input v-model="user.address" type="text"/></div>
+        <div><label>Phone number</label> <input v-model="user.phone" type="text"/></div>
+        <div><label>Date of birth</label> <input v-model="user.birthdate" type="text"/></div>
+        <button @click="changeData">Submit</button>
+      </div>
+    </div>
   </div>
 </template>
 
 
 <script>
-  import Logo from './Logo.vue'
-  import {closeRoll, isClosedRoll, openRoll} from "../utils/show-hide";
+import BluredBG from "../components/BluredBG.vue";
 
-  export default {
-    components: { Logo },
+import User from "../models/user";
 
-    data() {
-      return {
-        username: this.$store.state.user.username,
-        email: this.$store.state.user.email,
-        avatarUrl: this.$store.state.user.avatarUrl,
-        fullname: this.$store.state.user.fullname,
 
-        oldPassword: '',
-        newPassword: '',
-        confirmPassword: '',
+export default {
+  components: {BluredBG},
+  data() {
+    return {
+      user: new User(),
 
-        errorsInfo: {},
-        enabledInfo: true,
+      enabled: true,
+      errors: {}
+    }
+  },
 
-        errorsPassword: {},
-        enabledPassword: true,
+  mounted() {
+    this.user.set(this.$store.state.user);
+  },
+
+  methods: {
+    // TODO: Нормальная проверка всех полей
+    async __signInAction() {
+      if (this.username.length === 0) {
+        this.errors.username = 'Логин не может быть пустым';
+        return;
+      }
+      if (this.username.firstName === 0) {
+        this.errors.firstName = 'Имя не может быть пустым';
+        return;
+      }
+      if (this.email.length === 0) {
+        this.errors.email = 'Email не может быть пустым';
+        return;
+      }
+
+      const response = await this.$store.state.api.updateUser(this.user.toNetwork());
+      if (response.ok_) {
+        await this.$store.dispatch('GET_USER');
+        this.$store.state.popups.success('Данные обновлены');
+        return;
+      }
+
+      if (response.status_ === 409) {
+        this.errors.email = 'Такой email уже занят';
+      } else {
+        this.$store.state.popups.error("Не удалось обновить данные", 'Произошла неизвестная ошибка!');
       }
     },
 
-    methods: {
-      async __updateUserInfoAction() {
-        const response = await this.$store.state.api.updateUser({
-          email: this.email,
-          fullname: this.fullname,
-        })
-
-        if (response.ok_) {
-          this.$store.state.popups.success("Данные успешно изменены")
-          // todo: update data without getting user
-          await this.$store.dispatch('GET_USER')
-          return
-        }
-
-        const status = response.status_;
-        if (status === 400) {
-          this.errorsInfo.fullname = 'Некорректное полное имя!'
-          this.errorsInfo.email = 'Или некорректный email... Мы точно не знаем)'
-        } else {
-          this.$store.state.popups.error('Не удалось изменить данные', 'Произошла непредвиденная ошибка!')
-        }
-      },
-
-
-      async updateUserInfo() {
-        if (!this.enabledInfo) {
-          return
-        }
-        this.enabledInfo = false
-
-        this.errorsInfo = {}
-        await this.__updateUserInfoAction()
-
-        this.enabledInfo = true
-      },
-
-
-      async signOut() {
-        const response = await this.$store.state.api.signOut()
-        if (!response.ok_) {
-          this.$store.state.popups.error("Не удалось выйти из аккаунта", 'Произошла непредвиденная ошибка')
-          return
-        }
-
-        await this.$store.dispatch('DELETE_USER')
-        await this.$router.push('/signin')
-        this.$store.state.popups.success('Вы успешно вышли из аккаунта')
-      },
-
-
-      async __changePasswordAction() {
-        if (this.newPassword.length === 0) {
-          this.errorsPassword.newPassword = 'Пароль не может быть пустым'
-          return
-        }
-        if (this.newPassword !== this.confirmPassword) {
-          const error = 'Пароли не совпадают'
-          this.errorsPassword.newPassword = error
-          this.errorsPassword.confirmPassword = error
-          return
-        }
-
-        const response = await this.$store.state.api.updatePassword(this.oldPassword, this.newPassword);
-        if (response.ok_) {
-          this.oldPassword = ''
-          this.newPassword = ''
-          this.confirmPassword = ''
-          this.$store.state.popups.success("Пароль успешно изменен")
-          closeRoll(this.$refs.changePasswordFields)
-          return
-        }
-
-        const status = response.status_
-        if (status === 400) {
-          this.errorsPassword.oldPassword = 'Неверный старый пароль'
-        } else {
-          this.$store.state.popups.error('Не удалось изменить пароль', 'Произошла непредвиденная ошибка')
-        }
-      },
-
-
-      async changePassword() {
-        if (isClosedRoll(this.$refs.changePasswordFields)) {
-          openRoll(this.$refs.changePasswordFields);
-          return;
-        }
-
-        if (!this.enabledPassword) {
-          return
-        }
-        this.enabledPassword = false
-
-        this.errorsPassword = {}
-        await this.__changePasswordAction()
-
-        this.enabledPassword = true
+    async changeData() {
+      if (!this.enabled) {
+        return;
       }
-    },
+      this.enabled = false;
+
+      await this.__signInAction();
+
+      this.enabled = true;
+    }
   }
+}
 </script>

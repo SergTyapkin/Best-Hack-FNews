@@ -1,122 +1,113 @@
-<style lang="stylus">
-</style>
-
 <template>
-<!--  <Logo />-->
+  <BluredBg></BluredBg>
 
-  <div class="signup">
-    <div class="content">
-      <div class="standalone-form">
-        <div class="title">
-          <div class="primary">Регистрация</div>
-        </div>
-        <div class="form" @keydown.enter.prevent="signUp">
-          <form novalidate>
-            <div class="form-group" :class="{ error: errors.username }" @input="errors.username = ''">
-              <label>ЛОГИН*<span class="error-text">{{ errors.username }}</span></label>
-              <input v-model="username" type="text" class="form-control" required autocomplete="on">
-              <div class="muted">Минимум 3 символа, только буквы, цифры и _</div>
-            </div>
+  <form class="form centered-horizontal" novalidate @submit.prevent="signUp">
+    <img class="logo" src="../res/favicon.ico" alt="FNews" />
 
-            <div class="form-group" :class="{ error: errors.email }" @input="errors.email = ''">
-              <label>EMAIL*<span class="error-text">{{ errors.email }}</span></label>
-              <input v-model="email" type="email" class="form-control" placeholder="wolf@liokor.ru" autocomplete="on">
-              <div class="muted">Используется для восстановления пароля, если не указан - восстановить пароль крайне сложно</div>
-            </div>
+    <div class="info-container">
+      <div class="title">Создать аккаунт</div>
+    </div>
 
-            <div class="form-group" :class="{ error: errors.password }" @input="errors.password = ''">
-              <label>ПАРОЛЬ*<span class="error-text">{{ errors.password }}</span></label>
-              <input v-model="password" type="password" class="form-control" required autocomplete="off">
-              <div class="muted">В пароле должно быть много всяких символов, но его надо не забыть</div>
-            </div>
-
-            <div class="form-group" :class="{ error: errors.passwordConfirm }" @input="errors.passwordConfirm = ''">
-              <label>ПОДТВЕРЖДЕНИЕ ПАРОЛЯ*<span class="error-text">{{ errors.passwordConfirm }}</span></label>
-              <input v-model="passwordConfirm" type="password" class="form-control" required autocomplete="off">
-            </div>
-
-            <div class="form-group" :class="{ error: errors.fullname }" @input="errors.fullname = ''">
-              <label>ПОЛНОЕ ИМЯ<span class="error-text">{{ errors.fullname }}</span></label>
-              <input v-model="fullname" type="text" class="form-control" placeholder="Иван Иванов" autocomplete="on">
-            </div>
-
-            <div class="form-group">
-              <div class="btn" :class="{ 'btn-disabled': !enabled }" @click="signUp" >Создать</div>
-              <div class="muted">Уже с нами? <router-link to="/signin" class="router-link">Войти</router-link></div>
-            </div>
-          </form>
-        </div>
+    <div class="fields-container">
+      <div>
+        <span class="error-text">{{ errors.username }}</span>
+        <input type="text" autocomplete="on" placeholder=" " v-model="user.username">
+        <label>Логин</label>
+      </div>
+      <div>
+        <span class="error-text">{{ errors.name }}</span>
+        <input type="text" autocomplete="on" placeholder=" " v-model="user.name">
+        <label>Ваше имя</label>
+      </div>
+      <div>
+        <span class="error-text">{{ errors.email }}</span>
+        <input type="email" autocomplete="on" placeholder=" " v-model="user.email">
+        <label>Email</label>
+      </div>
+      <div>
+        <span class="error-text">{{ errors.password }}</span>
+        <input type="password" autocomplete="on" placeholder=" " v-model="user.password">
+        <label>Пароль</label>
+      </div>
+      <div>
+        <span class="error-text">{{ errors.passwordConfirm }}</span>
+        <input type="password" autocomplete="on" placeholder=" " v-model="passwordConfirm">
+        <label>Подтверждение пароля</label>
       </div>
     </div>
-  </div>
+
+    <div class="submit-container">
+      <input type="submit" value="Создать аккаунт">
+      <div class="text info">Уже есть аккаунт? <router-link to="/signin">Нажмите, чтобы войти.</router-link></div>
+    </div>
+  </form>
 </template>
 
+
 <script>
-  import Logo from './Logo.vue'
+import BluredBg from '../components/BluredBG.vue'
+import User from "../models/user";
 
-  export default {
-    components: { Logo },
+export default {
+  components: {BluredBg},
 
-    data() {
-      return {
-        username: "",
-        email: "",
-        password: "",
-        passwordConfirm: "",
-        fullname: "",
+  data() {
+    return {
+      user: new User(),
+      passwordConfirm: '',
 
-        enabled: true,
+      enabled: true,
+      errors: {}
+    }
+  },
 
-        errors: {}
+  methods: {
+    async __signUpAction() {
+      if (this.user.username.length === 0) {
+        this.errors.username = 'Логин не может быть пустым';
+        return;
       }
+      if (this.user.firstName.length === 0) {
+        this.errors.firstName = 'Имя не может быть пустым';
+        return;
+      }
+      if (this.user.password.length === 0) {
+        this.errors.password = 'Пароль не может быть пустым';
+        return;
+      }
+      if (this.user.password !== this.passwordConfirm) {
+        this.errors.password = 'Пароли не совпадают';
+        this.errors.passwordConfirm = 'Пароли не совпадают';
+        return;
+      }
+
+      const userInfo = await this.$store.state.api.signUp(this.user.toNetwork());
+      if (userInfo.ok_) {
+        this.$store.state.popups.success("Добро пожаловать!", `Пользователь ${this.username} успешно создан!`);
+        await this.$store.dispatch('GET_USER');
+        await this.$router.push('/profile');
+        return;
+      }
+
+      if (userInfo.status_ === 409) {
+        this.errors.username = 'Такой логин уже занят(';
+        this.errors.email = 'Или EMail уже занят... Мы точно не знаем)';
+        return;
+      }
+      this.$store.state.popups.error("Не удалось создать пользователя", 'Произошла неизвестная ошибка!');
     },
 
-    methods: {
-      async __signUpAction() {
-        if (this.username.length === 0) {
-          this.errors.username = 'Логин не может быть пустым'
-          return
-        }
-        if (this.password.length === 0) {
-          this.errors.password = 'Пароль не может быть пустым'
-          return
-        }
-
-        if (this.password !== this.passwordConfirm) {
-          this.errors.password = 'Пароли не совпадают'
-          this.errors.passwordConfirm = 'Пароли не совпадают'
-          return;
-        }
-
-        const response = await this.$store.state.api.signUp(this.username, this.email, this.password, this.fullname);
-        if (response.ok_) {
-          this.$store.state.popups.success("Добро пожаловать!", `Пользователь ${this.username} успешно создан!`);
-          await this.$store.dispatch('GET_USER');
-          await this.$router.push('/profile');
-          return;
-        }
-
-        const status = response.status_
-
-        if (status === 409) {
-          this.errors.username = 'Такой логин уже занят('
-          this.errors.email = 'Или EMail уже занят... Мы точно не знаем)'
-        } else {
-          this.$store.state.popups.error("Не удалось создать пользователя", 'Произошла неизвестная ошибка!');
-        }
-      },
-
-      async signUp() {
-        if (!this.enabled) {
-          return
-        }
-        this.enabled = false;
-
-        this.errors = {}
-        await this.__signUpAction();
-
-        this.enabled = true;
+    async signUp() {
+      if (!this.enabled) {
+        return;
       }
-    }
+      this.enabled = false;
+
+      this.errors = {};
+      await this.__signUpAction();
+
+      this.enabled = true;
+    },
   }
+}
 </script>

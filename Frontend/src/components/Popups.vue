@@ -56,7 +56,7 @@
   </div>
 </template>
 <script>
-  import {getChildrenHeight} from "./utils";
+  import {getChildrenHeight} from "../utils/utils";
 
   const DEFAULT_DISSAPPEAR_AFTER_MS = 3000;
   const DEFAULT_TRANSITION_OPACITY_TIME_MS = 500;

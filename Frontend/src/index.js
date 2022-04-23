@@ -7,7 +7,6 @@ import createVueRouter from './components/Router.js'
 import './styles/main.styl'
 import './styles/forms.styl'
 import './styles/scrollbars.styl'
-import './styles/components.styl'
 
 
 createApp(App)

@@ -5,28 +5,26 @@ export default class User extends Model {
     id: '?',
     isLogined: false,
     username: "",
-    login: "",
     password: "",
     email: "",
-    fullname: "",
-    avatarUrl: "",
-    chosenRoomId: -1,
+    name: "",
+    role: "",
   }
 
   toNetworkNames = {
     username: "username",
+    name: "name",
     email: "email",
     password: "password",
-    fullname: "fullname",
   }
 
   set(data) {
     super.set(data);
     this.isLogined = true;
-    this.avatarUrl = "";
   }
 
-  setChosenRoomId(id) {
-    this.chosenRoomId = id;
+  constructor() {
+    super();
+    this.setDefault();
   }
 }
