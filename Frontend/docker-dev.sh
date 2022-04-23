@@ -1,0 +1,1 @@
+docker run -p 9000:9000 --mount type=bind,source="$(pwd)"/,target=/app node /bin/bash -c "cd app && yarn && yarn dev"

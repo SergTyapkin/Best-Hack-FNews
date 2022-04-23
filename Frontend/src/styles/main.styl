@@ -1,0 +1,34 @@
+@require 'constants.styl'
+
+*
+    box-sizing border-box
+
+body
+    font-family Arial
+    margin 0
+    overflow-x hidden
+    overflow-y scroll
+    min-height 100vh
+
+    background global-background;
+    transition background-color ease 0.3s
+
+#app
+    display flex
+    > .slide-line
+        height 100vh
+
+
+.mobile-only
+    display none !important
+@media screen and (max-width: 700px) {
+    .desktop-only {
+        display: none !important;
+    }
+    .mobile-only {
+        display: inline-block !important;
+    }
+}
+
+a:hover
+    color clHighlight

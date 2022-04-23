@@ -1,0 +1,39 @@
+@require 'constants.styl'
+
+.with-hint
+    position relative
+    pointer-events all
+.with-hint:after
+    content attr(data-hint)
+    opacity 0
+    transition all 0.2s ease
+    padding 8px
+    margin 0
+    position absolute
+    top 0
+    left 100%
+    height 100%
+    box-sizing border-box
+    background colorShadowSolid
+    box-shadow 5px 0 5px colorShadow
+    display flex
+    align-items center
+    justify-content center
+    white-space nowrap
+    pointer-events none
+.with-hint:hover:after
+    opacity 1
+    pointer-events unset
+
+.svg-button
+    cursor pointer
+    overflow hidden
+    opacity 0.8
+    fill textColor3
+    fill-rule evenodd
+    clip-rule evenodd
+    transition all 0.15s ease-out
+.svg-button:hover
+    opacity 1
+    transform scale(1.1) !important
+    fill textColor1
