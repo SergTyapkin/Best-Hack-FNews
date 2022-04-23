@@ -11,7 +11,7 @@ logo-size = 140px
   <BluredBg></BluredBg>
 
   <form class="form centered-horizontal" novalidate @submit.prevent="signIn">
-    <img class="logo" src="../res/favicon.ico" alt="BH Exchange" />
+    <img class="logo" src="../res/logo.svg" alt="BH Exchange" />
 
     <div class="info-container">
       <div class="title">Вход</div>

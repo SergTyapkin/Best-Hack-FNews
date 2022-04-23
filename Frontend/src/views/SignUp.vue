@@ -2,7 +2,7 @@
   <BluredBg></BluredBg>
 
   <form class="form centered-horizontal" novalidate @submit.prevent="signUp">
-    <img class="logo" src="../res/favicon.ico" alt="FNews" />
+    <img class="logo" src="../res/logo.svg" alt="FNews" />
 
     <div class="info-container">
       <div class="title">Создать аккаунт</div>
