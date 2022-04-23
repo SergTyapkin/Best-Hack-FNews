@@ -29,11 +29,11 @@ async def register_new_user_view(
         token_type="Bearer",
     )
 
-    coockie = f"{access_token.token_type} {access_token.access_token}"
+    cookie = access_token.access_token
 
     response.set_cookie(
         key="session-key",
-        value=coockie,
+        value=cookie,
         max_age=settings.token_expires_in_secs,
         httponly=True,
     )
@@ -46,7 +46,7 @@ async def register_new_user_view(
     response_model=AccessToken,
     name="user:login-and-password",
 )
-async def user_login_with_email_and_password(
+async def user_login_with_usernames_and_password(
     db: Session = Depends(get_db),
     form_data: OAuth2PasswordRequestForm = Depends(OAuth2PasswordRequestForm),
 ) -> AccessToken:

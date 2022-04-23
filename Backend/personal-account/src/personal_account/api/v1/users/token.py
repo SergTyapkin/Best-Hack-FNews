@@ -1,5 +1,6 @@
 from datetime import datetime, timedelta
 
+
 from pydantic import EmailStr
 
 from .models import CoreModel
@@ -27,4 +28,3 @@ class JWTPayload(JWTMeta, JWTCredentials):
 class AccessToken(CoreModel):
     access_token: str
     token_type: str
- 

@@ -11,11 +11,3 @@
 #         username=currency.username,
 #         db=db,
 #     )
-
-#     stmt = insert(Currency).values(wallet_id data="inserted data")
-#     stmt = stmt.on_conflict_do_update(
-#         index_elements=[my_table.c.user_email],
-#         index_where=my_table.c.user_email.like("%@gmail.com"),
-#         set_=dict(data=stmt.excluded.data),
-#     )
-#     conn.execute(stmt)
