@@ -13,6 +13,7 @@
       .symbol
         margin-left 8px
         color textColor2
+        font-weight lighter
     .currency:not(:last-child)
       border-right 1px solid textColor5
     .currency:first-child
