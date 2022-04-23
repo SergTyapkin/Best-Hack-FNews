@@ -1,5 +1,8 @@
 @require 'constants.styl'
 
+*
+    box-sizing border-box
+
 body
     margin 0
     overflow-x hidden
@@ -16,6 +19,19 @@ body
     width 100%
     height 100vh
     position relative
+
+
+.mobile-only
+    display none !important
+@media screen and (max-width: 700px) {
+    .desktop-only {
+        display: none !important;
+    }
+    .mobile-only {
+        display: inline-block !important;
+    }
+}
+
 
 a
     text-decoration none

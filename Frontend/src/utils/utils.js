@@ -32,3 +32,46 @@ export function setTimedClass(elements, className, timeout = 1500) {
 export function deepClone(obj = {}) {
     return JSON.parse(JSON.stringify(obj));
 }
+
+export function curNameToSymbol(currencyName) {
+    let sym = {
+        aud: '$',
+        azn: '',
+        gbp: '£',
+        amd: '֏',
+        byn: '',
+        bgn: '',
+        brl: '',
+        huf: '',
+        hkd: '$',
+        dkk: '',
+        usd: '$',
+        eur: '€',
+        inr: '₹',
+        kzt: '₸',
+        cad: '$',
+        kgs: '',
+        cny: '¥',
+        mdl: '',
+        nok: '',
+        pln: '',
+        ron: '',
+        xdr: '',
+        sgd: '$',
+        tjs: '',
+        try: '₺',
+        tmt: '',
+        uzs: '',
+        uah: '₴',
+        czk: '',
+        sek: '',
+        chf: '',
+        zar: '',
+        krw: '₩',
+        jpy: '¥',
+    }[currencyName.toLowerCase()];
+    if (sym === '')
+        sym = currencyName.toUpperCase();
+
+    return sym;
+}

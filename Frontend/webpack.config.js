@@ -39,7 +39,7 @@ module.exports = {
         },
         proxy: {
             '/api': {
-                target: 'https://code.liokor.com',
+                target: '',
                 secure: false,
                 changeOrigin: true
             }
