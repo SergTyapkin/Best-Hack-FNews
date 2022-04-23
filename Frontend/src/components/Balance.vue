@@ -1,7 +1,12 @@
 <style lang="stylus" scoped>
 @require '../styles/constants.styl'
 
-.balance-plate
+
+div.balance-plate
+  text-align left
+  background mix(bgColor, transparent, 60%)
+  border 1px solid textColor5
+  font-size 15px
   padding 10px 20px
   border-radius radiusM
   .currencies

@@ -69,6 +69,7 @@ export function curNameToSymbol(currencyName) {
         zar: '',
         krw: '₩',
         jpy: '¥',
+        rub: '₽',
     }[currencyName.toLowerCase()];
     if (sym === '')
         sym = currencyName.toUpperCase();

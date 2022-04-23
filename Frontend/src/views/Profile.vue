@@ -1,9 +1,6 @@
 <style lang="stylus" scoped>
 @require '../styles/constants.styl'
 
-photo-size = 180px
-photo-column-width = 300px
-
 borderColorInputs = textColor5
 borderColorInputsFocus = textColor2
 
@@ -26,8 +23,6 @@ borderColorInputsFocus = textColor2
   flex-direction row
   text-align left
 
-.photo-column
-  width photo-column-width
 .history-column
 .info-column
   flex 1
@@ -53,44 +48,10 @@ borderColorInputsFocus = textColor2
       input:focus
         border-color borderColorInputsFocus
 
-    .buttons
-      display flex
-      justify-content space-between
-      button
-        all unset
-        margin-top 20px
-        float right
-        width 120px
-        background bgColor3
-        padding 7px
-        text-align center
-        cursor pointer
-        border-radius radiusS
-      button:first-child
-        background bgColor2
-
 .history-column
   margin-left 40px
   margin-right 100px
   font-size 15px
-  .balance-plate
-    padding 10px 20px
-    border-radius radiusM
-    .currencies
-      margin-top 16px
-      margin-bottom 10px
-      display flex
-      .currency
-        padding 0 20px
-        .symbol
-          margin-left 8px
-          color textColor2
-      .currency:not(:last-child)
-        border-right 1px solid textColor5
-      .currency:first-child
-        padding-left 0
-      .currency:last-child
-        padding-right 0
   .history-plate
     margin-top 10px
     padding 30px
@@ -116,9 +77,9 @@ borderColorInputsFocus = textColor2
         text-align right
         height fit-content
       .right.plus
-        color #50E3C2
+        color colorPlus
       .right.minus
-        color #FF3F3F
+        color colorMinus
 </style>
 
 <template>
@@ -136,8 +97,8 @@ borderColorInputsFocus = textColor2
           <div><label>Имя</label> <input v-model="user.name" type="text" class="plate"/></div>
           <div><label>Email</label> <input v-model="user.email" type="email" class="plate"/></div>
           <div><label>Пароль</label> <input v-model="user.password" type="password" class="plate"/></div>
-          <div class="buttons">
-            <button @click="logOut">Выйти</button>
+          <div class="submit-buttons">
+            <button @click="logOut" class="danger">Выйти</button>
             <button @click="changeData">Изменить</button>
           </div>
         </div>
