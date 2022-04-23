@@ -21,7 +21,7 @@ class UserCreate(CoreModel):
     password: constr(
         min_length=8,
         max_length=128,
-        regex="[a-zA-ZА-я0-9~!@#$%^&*_-+='|\{}]:\". <>,.? /]+$",
+        regex="^[a-zA-Z0-9~!@#$%^&*='|:\". <>,.? /]+$",
     )
 
 
@@ -36,7 +36,7 @@ class UserPasswordUpdate(CoreModel):
     password: constr(
         min_length=8,
         max_length=128,
-        regex="[a-zA-ZА-я0-9~!@#$%^&*_-+='|\{}]:\". <>,.? /]+$",
+        regex="^[a-zA-Z0-9~!@#$%^&*='|:\". <>,.? /]+$",
     )
     salt: str
 
@@ -45,7 +45,7 @@ class UserInDB(IDModelMixin, DateTimeModelMixin, UserBase):
     password: constr(
         min_length=8,
         max_length=128,
-        regex="[a-zA-ZА-я0-9~!@#$%^&*_-+='|\{}]:\". <>,.? /]+$",
+        regex="^[a-zA-Z0-9~!@#$%^&*='|:\". <>,.? /]+$",
     )
     salt: str
 
