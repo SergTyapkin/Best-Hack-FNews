@@ -78,7 +78,7 @@ export default {
         this.errors.username = error;
         this.errors.password = error;
       } else {
-        this.$store.state.popups.error("Не удалось создать пользователя", 'Произошла неизвестная ошибка!');
+        this.$store.state.popups.error("Не удалось войти в аккаунт", 'Произошла неизвестная ошибка!');
       }
     },
 

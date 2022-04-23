@@ -3,25 +3,25 @@ import ApiRequest from "../utils/requests";
 export default class Api extends ApiRequest {
     signUp = (username, email, password, fullname) => this.post('/users', {username, email, password, fullname});
     signIn = (username, password) => this.post('/user/auth', {username, password});
-    getUser = () => {
+    getUser = () => /*{
         return {
             ok_: true,
             username: 'serg',
             email: 'some@mail.ru',
             name: 'Сергей',
         }
-    }//this.get('/user');
+    }*/this.get('/user');
     updateUser = ({username, email, fullname}) => this.put('/user', {username, email, fullname});
     signOut = () => this.delete('/user/session');
     updatePassword = (oldPassword, newPassword) => this.put('/user/password', {oldPassword, newPassword});
 
-    getHistory = () => {
+    getHistory = () => /*{
         return {
             ok_: true,
             actions: [{action: 'topup', message: '+ 2150 €', date: 'timestamp'}, {action: 'withdraw', message: '- 100 $', date: 'timestamp'}]
         };
-    }//this.get('/history');
-    getUserBalance = () => {
+    }*/this.get('/history');
+    getUserBalance = () => /*{
         return {
             ok_: true,
             currencies: [
@@ -30,9 +30,9 @@ export default class Api extends ApiRequest {
                 {name: 'usd', value: 0.632},
             ],
         }
-    }//this.get('/balance/currencies');
+    }*/this.get('/balance/currencies');
 
-    getCurrencies = () => {
+    getCurrencies = () => /*{
         return {
             ok_: true,
             currencies: [
@@ -43,7 +43,7 @@ export default class Api extends ApiRequest {
                 {name: "INR", value: '398.2', percents: '-9.40'},
             ]
         }
-    }//this.get('/currencies');
+    }*/this.get('/currencies');
 
     doExchange = ({nameFrom, nameTo, valueTo}) => this.put('/exchange', {nameFrom, nameTo, valueTo});
 }

@@ -31,7 +31,7 @@
       </div>
       <div>
         <span class="error-text">{{ errors.passwordConfirm }}</span>
-        <input type="password" autocomplete="on" placeholder=" " v-model="passwordConfirm">
+        <input type="password" autocomplete="off" placeholder=" " v-model="passwordConfirm">
         <label>Подтверждение пароля</label>
       </div>
     </div>
@@ -67,8 +67,8 @@ export default {
         this.errors.username = 'Логин не может быть пустым';
         return;
       }
-      if (this.user.firstName.length === 0) {
-        this.errors.firstName = 'Имя не может быть пустым';
+      if (this.user.name.length === 0) {
+        this.errors.name = 'Имя не может быть пустым';
         return;
       }
       if (this.user.password.length === 0) {
