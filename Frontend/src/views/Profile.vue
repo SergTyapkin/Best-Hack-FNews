@@ -11,12 +11,6 @@ borderColorInputsFocus = textColor2
   font-size 28px
   margin-bottom 60px
 
-.plate
-  padding 20px 20px
-  background mix(bgColor, transparent, 60%)
-  border 1px solid borderColorInputs
-  border-radius radiusS
-
 
 .columns-flex-container
   display flex

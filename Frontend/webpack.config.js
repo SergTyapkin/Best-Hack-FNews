@@ -39,7 +39,7 @@ module.exports = {
         },
         proxy: {
             '/api': {
-                target: 'https://0ec0-86-62-78-69.eu.ngrok.io',
+                target: 'https://f8a9-86-62-78-69.eu.ngrok.io',
                 secure: false,
                 changeOrigin: true
             }

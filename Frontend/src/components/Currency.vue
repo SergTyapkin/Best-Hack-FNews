@@ -14,13 +14,13 @@
   colorIncreaseSelected = mix(colorIncrease, white, 30%)
   colorDecreaseSelected = mix(colorDecrease, white, 30%)
 
-  .currency
+  .currency:not(.plain)
     margin-right 15px
     border 1px solid borderColor
     border-radius radius
     background bg
     transition background 0.2s ease
-  .currency:hover
+  .currency:not(.plain)hover
     background mix(bg, white, 80%)
   .currency.selected
     background bgSelected
@@ -93,7 +93,7 @@
 </style>
 
 <template>
-  <div :class="'currency ' + (isSelected ? 'selected' : '')">
+  <div :class="'currency ' + (isSelected ? 'selected' : '') + (plainRender ? 'plain' : '')">
     <div :class="'img-col ' + (symbol.length > 1 ? 'many-symbols' : '')">
       {{ symbol }}
     </div>
@@ -131,6 +131,10 @@
       percents: Number,
       symbol: String,
       isSelectedProp: {
+        type: Boolean,
+        default: false
+      },
+      plainRender: {
         type: Boolean,
         default: false
       },
