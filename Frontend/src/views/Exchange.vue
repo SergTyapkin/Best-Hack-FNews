@@ -26,11 +26,11 @@ borderColorInputsFocus = textColor2
     display inline-block
     .title
       font-size 45px
-    .back-button
+    .svg-button
       position absolute
       left 70px
       top 9px
-    .back-button.closed
+    .svg-button.closed
       left 0
       opacity 0
   .half.page-name
@@ -121,27 +121,55 @@ borderColorInputsFocus = textColor2
   max-width 0
   margin 0
   opacity 0
-.info-column.closed + .currencies-column
+.info-column:not(.closed) ~ .currencies-column
+.edit-column:not(.closed) ~ .currencies-column
   .currencies-container
     .currency-plate
-      width calc(25% - 15px)
+      width calc(50% - 15px)
 
 
 .currencies-column
+  margin-top 50px
   margin-left 70px
   margin-right 45px
   flex 1
+.currencies-container
+  display flex
+  flex-wrap wrap
+  .currency-plate
+    width calc(25% - 15px)
+    height 70px
+    margin-right 15px
+    margin-bottom 15px
+    cursor pointer
+
+.edit-column
+  flex 1
+  transition all 0.2s ease-in-out
+  max-width 5000px
   .currencies-container
-    margin-top 50px
-    justify-content space-between
-    display flex
-    flex-wrap wrap
+    margin-left 40px
+    overflow-y scroll
+    max-height 400px
     .currency-plate
       width calc(50% - 15px)
-      height 70px
-      margin-right 15px
-      margin-bottom 15px
-      cursor pointer
+.edit-column.closed
+  flex 0
+  opacity 0
+  max-width 0
+
+.float-button
+  .svg
+    opacity 0.7
+    transform scale(0.8)
+
+.currencies-column
+.edit-column
+  .hint
+    text-align center
+    font-size 14px
+    color textColor3
+    margin-bottom 10px
 </style>
 
 <template>
@@ -149,12 +177,12 @@ borderColorInputsFocus = textColor2
 
   <TopBar></TopBar>
 
-  <div :class="'gradient-bg ' + (this.selectedCurrency ? '' : 'closed')"></div>
+  <div :class="'gradient-bg ' + (selectedCurrency ? '' : 'closed')"></div>
 
   <div class="page">
     <div class="top-string">
       <div class="half page-name">
-        <img :class="'back-button ' + (this.selectedCurrency ? '' : 'closed')" src="../res/arrow_left.svg" alt="<-" @click="deselectCurrency">
+        <img :class="'svg-button ' + (selectedCurrency || isEditorOpened ? '' : 'closed')" src="../res/arrow_left.svg" alt="<-" @click="closeCurrencyColumn">
         <div class="title">Обмен валют</div>
       </div>
       <span class="half balance">
@@ -201,12 +229,27 @@ borderColorInputsFocus = textColor2
         </form>
       </div>
 
+
+      <div :class="'edit-column ' + (isEditorOpened ? '' : 'closed')">
+        <div class="hint">Нажмите на валюту, чтобы добавить её в отслеживаемые</div>
+        <div class="currencies-container scrollable">
+          <Currency v-for="(cur, idx) in allCurrencies" class="currency-plate" ref="currencies" @click="moveCurrencyToMy(idx)"
+                    :name="cur.name" :value="cur.value" :percents="cur.percents" :symbol="cur.symbol"></Currency>
+        </div>
+      </div>
+
+
       <div class="currencies-column">
+        <div class="hint">Нажмите на валюту, убрать её из отслеживаемых</div>
         <div class="currencies-container">
           <Currency v-for="(cur, idx) in currencies" class="currency-plate" ref="currencies" @click="selectCurrency(idx)"
                     :name="cur.name" :value="cur.value" :percents="cur.percents" :symbol="cur.symbol"></Currency>
         </div>
       </div>
+    </div>
+    <div class="float-button" @click="opedEditCurrencies">
+      <img class="svg" src="../res/edit.svg" alt="plus">
+      <div class="hover-text">Изменить валюты</div>
     </div>
   </div>
 </template>
@@ -225,7 +268,10 @@ export default {
   data() {
     return {
       currencies: [],
+      allCurrencies: [],
       selectedCurrency: null,
+
+      isEditorOpened: false,
 
       isSell: false,
       exchangeValue: '',
@@ -237,7 +283,6 @@ export default {
 
   async mounted() {
     this.currencies = await this.getCurrencies();
-    this.currencies.forEach(cur => cur.symbol = curNameToSymbol(cur.name));
   },
 
   methods: {
@@ -286,14 +331,16 @@ export default {
       this.enabled = true;
     },
 
-    async getCurrencies() {
-      const currencies = await this.$store.state.api.getCurrencies();
+    async getCurrencies(isAll = false) {
+      const currencies = await this.$store.state.api[isAll ? 'getAllCurrencies' : 'getCurrencies']();
       if (!currencies.ok_) {
         this.$store.state.popups.error('Не удалось получить список валют');
         return [];
       }
+      currencies.currencies.forEach(cur => cur.symbol = curNameToSymbol(cur.name));
       return currencies.currencies;
     },
+
 
     async logOut() {
       const response = await this.$store.state.api.signOut();
@@ -305,6 +352,16 @@ export default {
     },
 
     selectCurrency(idx) {
+      if (this.isEditorOpened) {
+        const currency = this.currencies[idx];
+        this.allCurrencies.push(currency);
+        this.currencies.splice(idx, 1);
+
+        this.$store.state.api.removeCurrency(currency.name);
+        return;
+      }
+
+
       if (this.selectedCurrency) {
         this.selectedCurrency.isSelected = false;
       }
@@ -315,9 +372,12 @@ export default {
 
       this.updateExchangeResult();
     },
-    deselectCurrency() {
-      this.selectedCurrency.isSelected = false;
-      this.selectedCurrency = null;
+    closeCurrencyColumn() {
+      if (this.selectedCurrency) {
+        this.selectedCurrency.isSelected = false;
+        this.selectedCurrency = null;
+      }
+      this.isEditorOpened = false;
     },
 
     switchCurrencies() {
@@ -353,6 +413,20 @@ export default {
       }
       this.exchangeResult = '- ' + (this.exchangeValue * this.selectedCurrency.value) + '₽';
     },
+
+    async opedEditCurrencies() {
+      this.selectedCurrency = null;
+      this.isEditorOpened = true;
+      this.allCurrencies = await this.getCurrencies(true);
+    },
+
+    moveCurrencyToMy(idx) {
+      const currency = this.allCurrencies[idx];
+      this.currencies.push(currency);
+      this.allCurrencies.splice(idx, 1);
+
+      this.$store.state.api.addCurrency(currency.name);
+    }
   }
 }
 </script>

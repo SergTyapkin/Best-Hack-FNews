@@ -20,10 +20,10 @@
     border-radius radius
     background bg
     transition background 0.2s ease
-  .currency:not(.plain)hover
+  .currency:not(.plain):hover
     background mix(bg, white, 80%)
   .currency.selected
-    background bgSelected
+    background bgSelected !important
 
   .currency
     display flex
@@ -88,8 +88,6 @@
         svg
           fill colorDecreaseSelected
         color colorDecreaseSelected
-
-
 </style>
 
 <template>

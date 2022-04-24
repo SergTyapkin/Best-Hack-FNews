@@ -44,6 +44,38 @@ export default class Api extends ApiRequest {
             ]
         }
     }//this.get('/currencies');
+    getAllCurrencies = () => {
+        return {
+            ok_: true,
+            currencies: [
+                {name: "EUR", value: '88', percents: '3.35'},
+                {name: "EUR", value: '88', percents: '3.35'},
+                {name: "EUR", value: '88', percents: '3.35'},
+                {name: "EUR", value: '88', percents: '3.35'},
+                {name: "EUR", value: '88', percents: '3.35'},
+                {name: "EUR", value: '88', percents: '3.35'},
+                {name: "EUR", value: '88', percents: '3.35'},
+                {name: "EUR", value: '88', percents: '3.35'},
+                {name: "KZT", value: '7.3', percents: '2.8'},
+                {name: "XDR", value: '34.3', percents: '-6.40'},
+                {name: "XDR", value: '34.3', percents: '-6.40'},
+                {name: "XDR", value: '34.3', percents: '-6.40'},
+                {name: "XDR", value: '34.3', percents: '-6.40'},
+                {name: "XDR", value: '34.3', percents: '-6.40'},
+                {name: "TRY", value: '3324.3', percents: '-2.40'},
+                {name: "INR", value: '398.2', percents: '-9.40'},
+                {name: "INR", value: '398.2', percents: '-9.40'},
+                {name: "INR", value: '398.2', percents: '-9.40'},
+                {name: "INR", value: '398.2', percents: '-9.40'},
+                {name: "INR", value: '398.2', percents: '-9.40'},
+                {name: "INR", value: '398.2', percents: '-9.40'},
+                {name: "INR", value: '398.2', percents: '-9.40'},
+                {name: "INR", value: '398.2', percents: '-9.40'},
+                {name: "INR", value: '398.2', percents: '-9.40'},
+            ]
+        }//this.get('/currencies/all');
+    }
+
     getNews = () => {
         return {
             ok_: true,
@@ -88,4 +120,7 @@ export default class Api extends ApiRequest {
     }
 
     doExchange = ({nameFrom, nameTo, valueTo}) => this.put('/exchange', {nameFrom, nameTo, valueTo});
+
+    addCurrency = (name) => this.post('/currency', {name});
+    removeCurrency = (name) => this.delete('/currency', {name});
 }
