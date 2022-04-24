@@ -1,6 +1,7 @@
+from fastapi import status, HTTPException
 from sqlalchemy.orm import Session
 
-from .models import CurrencyTopUp, CurrencyInDB
+from .models import CurrencyTopUp, CurrencyInDB, CurrencyWithdraw
 from ....external.postgres.models.currency import Currency
 from ..base.utils import get_user_by_username
 
@@ -30,4 +31,39 @@ def topup_wallet(
 
     db.commit()
 
-    return CurrencyInDB(db_currency.__dict__)
+    return CurrencyInDB(
+        id=db_currency.id, name=db_currency.name, amount=db_currency.amount
+    )
+
+
+def withdraw_wallet(
+    *, username: str, currency: CurrencyWithdraw, db: Session
+) -> CurrencyInDB:
+    user = get_user_by_username(
+        username=username,
+        db=db,
+    )
+
+    db_currency = (
+        db.query(Currency)
+        .with_parent(user.wallet)
+        .filter(Currency.name == currency.name)
+        .first()
+    )
+
+    if not db_currency:
+        raise HTTPException(
+            status.HTTP_404_NOT_FOUND, detail="No such currency in your wallet"
+        )
+    else:
+        if db_currency.amount - currency.amount < 0:
+            raise HTTPException(
+                status.HTTP_409_CONFLICT, detail="No such currency in your wallet"
+            )
+        db_currency.amount -= currency.amount
+
+    db.commit()
+
+    return CurrencyInDB(
+        id=db_currency.id, name=db_currency.name, amount=db_currency.amount
+    )

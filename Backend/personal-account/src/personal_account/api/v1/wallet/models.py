@@ -15,6 +15,11 @@ class CurrencyTopUp(CoreModel):
     amount: confloat(ge=0.0)
 
 
+class CurrencyWithdraw(CoreModel):
+    name: constr(min_length=1, regex="^[a-zA-Z]+$")
+    amount: confloat(ge=0.0)
+
+
 class CurrencyInDB(IDModelMixin, DateTimeModelMixin, CurrencyBase):
     class Config:
         orm_mode = True

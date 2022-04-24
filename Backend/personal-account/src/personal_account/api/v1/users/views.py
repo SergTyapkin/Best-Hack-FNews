@@ -1,3 +1,4 @@
+from http.client import HTTPResponse
 from fastapi import APIRouter, Body, Depends, status, Response
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
@@ -32,7 +33,7 @@ async def register_new_user_view(
     cookie = access_token.access_token
 
     response.set_cookie(
-        key="session-key",
+        key="session",
         value=cookie,
         max_age=settings.token_expires_in_secs,
         httponly=True,
@@ -43,13 +44,13 @@ async def register_new_user_view(
 
 @user_router.post(
     "/login/token",
-    response_model=AccessToken,
     name="user:login-and-password",
 )
 async def user_login_with_usernames_and_password(
+    response: Response,
     db: Session = Depends(get_db),
     form_data: OAuth2PasswordRequestForm = Depends(OAuth2PasswordRequestForm),
-) -> AccessToken:
+) -> str:
     user = authenticate_user(
         username=form_data.username,
         password=form_data.password,
@@ -61,4 +62,13 @@ async def user_login_with_usernames_and_password(
         token_type="bearer",
     )
 
-    return access_token
+    cookie = access_token.access_token
+
+    response.set_cookie(
+        key="session",
+        value=cookie,
+        max_age=settings.token_expires_in_secs,
+        httponly=True,
+    )
+
+    return "ok"
