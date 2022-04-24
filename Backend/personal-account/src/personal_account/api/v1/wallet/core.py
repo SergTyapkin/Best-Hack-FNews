@@ -210,8 +210,7 @@ def exchange_currency_from(
         cur_from = next(filter(lambda x: x.name == nameFrom, all_currencies.currencies))
         mid_sum_rub = valueFrom / cur_from.rate
 
-    cur_to = next(filter(lambda x: x.name == nameTo, all_currencies.currencies))
-    operations.topupToAmount = mid_sum_rub * cur_to.rate
+    operations.topupToAmount = mid_sum_rub
 
     return operations
 
@@ -230,9 +229,9 @@ def exchange_currency_to(
     cur_from = next(filter(lambda x: x.name == nameFrom, all_currencies.currencies))
 
     if nameTo == "RUB":
-        operations.withdrawFromAmount = valueTo / cur_from.rate
-    elif nameFrom == "RUB":
         operations.withdrawFromAmount = valueTo * cur_from.rate
+    elif nameFrom == "RUB":
+        operations.withdrawFromAmount = valueTo / cur_from.rate
     else:
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
