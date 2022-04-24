@@ -87,6 +87,13 @@ export default {
 
   async mounted() {
     this.news = await this.getNews();
+    this.news.forEach(new_ => {
+      if (new_.description.length > 512) {
+        new_.description256 = new_.description.slice(0, 512) + '...';
+      } else {
+        new_.description256 = new_.description;
+      }
+    });
   },
 
   methods: {

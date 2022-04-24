@@ -25,7 +25,7 @@
 </style>
 
 <template>
-  <div class="new">
+  <div class="new" @click="openFull(data.title, data.description)">
     <div class="title">{{ data.title }}</div>
     <div class="meta-string">
       <span class="date">{{ data.date }}</span>
@@ -33,7 +33,7 @@
       <span class="tag" v-for="tag in data.tags">{{ tag }}</span>
     </div>
     <div class="description">
-      {{ data.description }}
+      {{ data.description256 }}
     </div>
   </div>
 </template>
@@ -44,5 +44,11 @@ export default {
   props: {
     data: {}
   },
+
+  methods: {
+    openFull(title, text) {
+      this.$store.state.modal.alert(title, text);
+    }
+  }
 }
 </script>
