@@ -12,14 +12,14 @@ export default class Api extends ApiRequest {
     signIn = (username, password) => this.post('/user/login/token', {
         form_data: {username, password}
     });
-    getUser = () => {
+    getUser = () => /*{
         return {
             ok_: true,
             username: 'serg',
             email: 'some@mail.ru',
             name: 'Сергей',
         }
-    }//this.get('/user');
+    }*/this.get('/user');
     updateUser = ({username, email, name}) => this.put('/user', {username, email, name});
     signOut = () => this.delete('/user/session');
     updatePassword = (oldPassword, newPassword) => this.put('/user/password', {oldPassword, newPassword});
@@ -30,7 +30,7 @@ export default class Api extends ApiRequest {
             actions: [{action: 'topup', message: '+ 2150 €', date: 'timestamp'}, {action: 'withdraw', message: '- 100 $', date: 'timestamp'}]
         };
     }//this.get('/history');
-    getUserBalance = () => /*{
+    getUserBalance = () => {
         return {
             ok_: true,
             currencies: [
@@ -39,7 +39,7 @@ export default class Api extends ApiRequest {
                 {name: 'usd', amount: 0.632},
             ],
         }
-    }*/this.get('/wallet/currencies');
+    }//this.get('/wallet/currencies');
 
     getCurrencies = () => {
         return {
@@ -97,7 +97,7 @@ export default class Api extends ApiRequest {
         }//this.get('/wallet/currencies/all');
     }
 
-    getNews = () => {
+    getNews = () => /*{
         return {
             ok_: true,
             news: [
@@ -138,7 +138,7 @@ export default class Api extends ApiRequest {
                     tags: []},
             ]
         }
-    }
+    }*/this.get('/news');
 
     doExchange = ({nameFrom, nameTo, valueTo, valueFrom}) => this.post('/wallet/exchange', {nameFrom, nameTo, valueTo, valueFrom});
 
@@ -157,7 +157,7 @@ export default class Api extends ApiRequest {
                 {id: 100, name: 'Финансы', keys: "Молоко, яйца, мука, хлеб, дрожжи", author: 'User61'},
             ]
         };
-    }//this.get('/topics')
+    }//this.get('/topics');
     createTopic = (name, keys) => this.post('/topics', {name, keys});
     deleteTopic = (id) => this.delete('/topics', {id});
     updateTopic = (id, name, keys) => this.put('/topics', {id, name, keys});

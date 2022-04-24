@@ -44,6 +44,7 @@
       margin-left 10px
       margin-right 20px
       .value-row
+        position relative
         margin-top 15px
         .value
           font-size 15px
@@ -53,6 +54,13 @@
           color textColor1
           opacity 0.7
           float right
+        .notify
+          position absolute
+          right -10px
+          top -10px
+          width 15px
+          opacity 0
+          transition opacity 0.2s ease
       .perc-row
         margin-top 3px
         font-size 10px
@@ -78,6 +86,13 @@
           fill colorDecrease
         color colorDecrease
 
+  .currency:hover
+    .info-col
+      .value-row
+        .notify
+          opacity 0.7
+        .notify:hover
+          opacity 1
   .currency.selected
     .info-col
       .perc-row.increase
@@ -100,6 +115,8 @@
       <div class="value-row">
         <span class="value">{{ value }}</span>
         <span class="name">{{ name }}</span>
+
+        <img v-if="showNotify" class="svg-button notify" src="../res/bell.svg" alt="bell" @click.prevent.stop="$emit('notify', name)">
       </div>
       <div :class="'perc-row ' + (isIncrease ? 'increase' : 'decrease')">
         <span class="perc">{{ isIncrease ? '+' : '-'}}{{ percentsAbs }}%</span>
@@ -128,14 +145,9 @@
       name: String,
       percents: Number,
       symbol: String,
-      isSelectedProp: {
-        type: Boolean,
-        default: false
-      },
-      plainRender: {
-        type: Boolean,
-        default: false
-      },
+      isSelectedProp: false,
+      showNotify: false,
+      plainRender: false,
     }
   }
 </script>

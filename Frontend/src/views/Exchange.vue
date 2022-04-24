@@ -245,7 +245,8 @@ borderColorInputsFocus = textColor2
 
         <div class="currencies-container">
           <Currency v-for="(cur, idx) in currencies" class="currency-plate" ref="currencies" @click="selectCurrency(idx)"
-                    :name="cur.name" :value="cur.rate" :percents="cur.percents" :symbol="cur.symbol"></Currency>
+                    :name="cur.name" :value="cur.rate" :percents="cur.percents" :symbol="cur.symbol"
+                    :show-notify="true" @notify="notify"></Currency>
         </div>
       </div>
     </div>
@@ -263,7 +264,7 @@ import BluredBG from "../components/BluredBG.vue";
 import TopBar from "../components/TopBar.vue";
 import Balance from "../components/Balance.vue";
 import Currency from "../components/Currency.vue";
-import {curNameToSymbol} from "../utils/utils";
+import {curNameToSymbol, currencies} from "../utils/utils";
 
 export default {
   components: {TopBar, BluredBG, Balance, Currency},
@@ -335,13 +336,27 @@ export default {
     },
 
     async getCurrencies(isAll = false) {
-      const currencies = await this.$store.state.api[isAll ? 'getAllCurrencies' : 'getWatchingCurrencies']();
-      if (!currencies.ok_) {
+      const currencies_ = await this.$store.state.api[isAll ? 'getAllCurrencies' : 'getWatchingCurrencies']();
+      if (!currencies_.ok_) {
         this.$store.state.popups.error('Не удалось получить список валют');
         return [];
       }
-      currencies.currencies.forEach(cur => cur.symbol = curNameToSymbol(cur.name));
-      return currencies.currencies;
+      currencies_.currencies.forEach(cur => cur.symbol = curNameToSymbol(cur.name));
+
+
+      Object.keys(currencies).forEach(key => {
+        key = key.toUpperCase();
+        const perc = localStorage.getItem(key);
+        if (perc !== null) {
+          const item = currencies_.currencies.find(el => el.name === key);
+          if (Math.abs(item?.percents) >= Number(perc)) {
+            localStorage.removeItem(key);
+            this.$store.state.popups.alert(`Валюта ${key} превысила порог изменения в ${perc}%.`, 'Вы были подписаны на это уведомление', 10000);
+          }
+        }
+      });
+
+      return currencies_.currencies;
     },
 
 
@@ -433,6 +448,14 @@ export default {
       this.allCurrencies.splice(idx, 1);
 
       this.$store.state.api.addCurrency(currency.name);
+    },
+
+    async notify(name) {
+      const percents = await this.$store.state.modal.prompt(`При изменении ${name} на сколько процентов прислать уведомление?`);
+      if (!percents)
+        return;
+      this.$store.state.popups.success("Хорошо, мы вас уведомим!");
+      localStorage.setItem(name, percents);
     }
   }
 }

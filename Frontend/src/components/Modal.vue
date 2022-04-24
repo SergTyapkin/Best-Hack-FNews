@@ -22,7 +22,8 @@
       background-color colorShadowDark
       cursor pointer
 
-    .standalone-form
+    .form
+      position relative
       cursor default
 
       .confirm-button
@@ -50,21 +51,23 @@
     <div class="modal-background" @click="__resolve(false)">
     </div>
 
-    <div class="standalone-form" ref="form">
+    <div class="form" ref="form">
       <span class="close-btn" @click="__resolve(false)">
         <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16"><path d="M1.293 1.293a1 1 0 0 1 1.414 0L8 6.586l5.293-5.293a1 1 0 1 1 1.414 1.414L9.414 8l5.293 5.293a1 1 0 0 1-1.414 1.414L8 9.414l-5.293 5.293a1 1 0 0 1-1.414-1.414L6.586 8 1.293 2.707a1 1 0 0 1 0-1.414z"/></svg>
       </span>
 
-      <div class="title">
-        <div class="primary">{{ title }}</div>
-        <div class="secondary">{{ description }}</div>
+      <div class="info-container">
+        <div class="title">{{ title }}</div>
+        <div class="description">{{ description }}</div>
       </div>
 
-      <div class="form">
+      <div class="fields-container">
         <div v-if="type === 'prompt'" class="form-group">
           <input type="text" v-model="text" ref="inputText" class="form-control">
         </div>
+      </div>
 
+      <div class="submit-container submit-buttons">
         <div class="form-group">
           <button @click="__resolve()" class="btn submit" v-if="type !== 'confirm'" ref="buttonOk">Ок</button>
           <div v-else class="confirm-buttons">
