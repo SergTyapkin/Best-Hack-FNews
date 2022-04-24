@@ -43,7 +43,7 @@ export default class Api extends ApiRequest {
                 {name: "INR", value: '398.2', percents: '-9.40'},
             ]
         }
-    }//this.get('/currencies');
+    }//this.get('/wallet/currencies');
     getAllCurrencies = () => {
         return {
             ok_: true,
@@ -73,7 +73,7 @@ export default class Api extends ApiRequest {
                 {name: "INR", value: '398.2', percents: '-9.40'},
                 {name: "INR", value: '398.2', percents: '-9.40'},
             ]
-        }//this.get('/currencies/all');
+        }//this.get('/wallet/currencies/all');
     }
 
     getNews = () => {
@@ -119,11 +119,25 @@ export default class Api extends ApiRequest {
         }
     }
 
-    doExchange = ({nameFrom, nameTo, valueTo}) => this.put('/exchange', {nameFrom, nameTo, valueTo});
+    doExchange = ({nameFrom, nameTo, valueTo}) => this.post('/wallet/exchange', {nameFrom, nameTo, valueTo});
 
-    addCurrency = (name) => this.post('/currency', {name});
-    removeCurrency = (name) => this.delete('/currency', {name});
+    addCurrency = (name) => this.post('/wallet/currency', {name});
+    removeCurrency = (name) => this.delete('/wallet/currency', {name});
 
     topup = (value) => this.post('/wallet/topup', {value});
     withdraw = (value) => this.post('/wallet/withdraw', {value});
+
+    getTopics = () => {
+        return {
+            ok_: true,
+            topics: [
+                {id: 56, name: 'Кулинария', keys: "Молоко, яйца, мука, хлеб, дрожжи", author: 'serg'},
+                {id: 12, name: 'Строительство', keys: "Молоко, яйца, мука, хлеб, дрожжи", author: 'Username42'},
+                {id: 100, name: 'Финансы', keys: "Молоко, яйца, мука, хлеб, дрожжи", author: 'User61'},
+            ]
+        };
+    }//this.get('/topics')
+    createTopic = (name, keys) => this.post('/topics', {name, keys});
+    deleteTopic = (id) => this.delete('/topics', {id});
+    updateTopic = (id, name, keys) => this.put('/topics', {id, name, keys});
 }

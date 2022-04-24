@@ -40,6 +40,11 @@ stats-width = 200px
   .stats
     width stats-width
     height 300px
+
+.setup
+  width 25px
+.setup:hover
+  transform rotate(45deg)
 </style>
 
 <template>
@@ -50,7 +55,10 @@ stats-width = 200px
   <div class="bg"></div>
 
   <div class="page">
-    <div class="page-name">Новости</div>
+    <div class="page-name">
+      Новости
+      <router-link to="/setup"><img class="svg-button setup" src="../res/settings.svg" alt="setup"></router-link>
+    </div>
 
     <div class="news-flex-container">
       <New v-for="curNew in news.slice(0, 2)" :data="curNew" class="new first-string"></New>
