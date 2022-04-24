@@ -41,3 +41,17 @@ class ExternalCurrency(BaseModel):
 
 class CurrencyPublicList(BaseModel):
     currencies: list[ExternalCurrency]
+
+
+class ExchangeCurrencies(BaseModel):
+    nameFrom: str
+    nameTo: str
+    valueTo: Optional[float]
+    valueFrom: Optional[float]
+
+
+class ExchangeOperations(BaseModel):
+    nameWithdrawFrom: str
+    nameTopUpTo: str
+    withdrawFromAmount: Optional[float] = 0.0
+    topupToAmount: Optional[float] = 0.0

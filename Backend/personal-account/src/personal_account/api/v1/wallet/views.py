@@ -10,6 +10,7 @@ from .models import (
     CurrencyPublic,
     CurrencyPublicListWallet,
     CurrencyPublicList,
+    ExchangeCurrencies,
 )
 
 from .core import (
@@ -17,6 +18,7 @@ from .core import (
     withdraw_wallet,
     get_all_currencies,
     get_all_currencies_in_wallet,
+    exchange_currency,
 )
 
 wallet_router = APIRouter(prefix="/wallet", tags=["wallet"])
@@ -71,7 +73,7 @@ async def withdraw_wallet_view(
 @wallet_router.get(
     "/currencies",
     response_model=CurrencyPublicListWallet,
-    name="wallet:get_all_currencies",
+    name="wallet:get-all-currencies",
     status_code=status.HTTP_200_OK,
 )
 async def get_all_currencies_in_wallet_view(
@@ -92,7 +94,7 @@ async def get_all_currencies_in_wallet_view(
 @wallet_router.get(
     "/currencies/all",
     response_model=CurrencyPublicList,
-    name="wallet:get_all_currencies",
+    name="wallet:get-all-currencies",
     status_code=status.HTTP_200_OK,
 )
 async def get_all_currencies_view():
@@ -100,3 +102,24 @@ async def get_all_currencies_view():
 
     return all_currencies
 
+
+@wallet_router.post(
+    "/exchange",
+    response_model=str,
+    name="wallet:exchange-currencies",
+    status_code=status.HTTP_200_OK,
+)
+async def get_all_currencies_view(
+    exchange_currencies: ExchangeCurrencies,
+    session: str = Cookie(None),
+    db: Session = Depends(get_db),
+):
+    JWTBearer.verify_jwt(session)
+    username = AuthService.get_usernameJWT(session)
+    await exchange_currency(
+        username=username,
+        exchange_currencies=exchange_currencies,
+        db=db,
+    )
+
+    return "ok"

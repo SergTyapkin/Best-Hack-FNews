@@ -1,13 +1,17 @@
-from fastapi import status, HTTPException
+from os import stat
+from fastapi import HTTPException, status
+from loguru import logger
 from sqlalchemy.orm import Session
 
 from .models import (
     CurrencyTopUp,
     CurrencyInDB,
     CurrencyWithdraw,
+    ExchangeCurrencies,
     ExternalCurrency,
     CurrencyPublicListWallet,
     CurrencyPublicList,
+    ExchangeOperations,
 )
 from ....external.postgres.models.currency import Currency
 from ..base.utils import get_user_by_username
@@ -110,3 +114,122 @@ async def get_all_currencies() -> CurrencyPublicList:
         currencies.append(ExternalCurrency(name=name, rate=rate))
 
     return CurrencyPublicList(currencies=currencies)
+
+
+async def exchange_currency(
+    *,
+    username: str,
+    exchange_currencies: ExchangeCurrencies,
+    db: Session,
+):
+    user = get_user_by_username(
+        username=username,
+        db=db,
+    )
+
+    try:
+
+        if exchange_currencies.valueTo and exchange_currencies.valueFrom:
+            raise HTTPException(
+                status_code=status.HTTP_409_CONFLICT,
+                detail="You cannot set your own rate :)",
+            )
+
+        db_currency_from = (
+            db.query(Currency)
+            .with_parent(user.wallet)
+            .filter(Currency.name == exchange_currencies.nameFrom)
+            .first()
+        )
+
+        if not db_currency_from:
+            raise HTTPException(
+                status_code=status.HTTP_409_CONFLICT,
+                detail="You don't have such currency for exchange",
+            )
+
+        if (
+            exchange_currencies.valueFrom
+            and exchange_currencies.valueFrom > db_currency_from.amount
+        ):
+            raise HTTPException(
+                status_code=status.HTTP_409_CONFLICT,
+                detail="You don't have enough currency for exchange",
+            )
+
+        db_currency_to = (
+            db.query(Currency)
+            .with_parent(user.wallet)
+            .filter(Currency.name == exchange_currencies.nameTo)
+            .first()
+        )
+
+        all_currencies = await get_all_currencies()
+        operations = (
+            exchange_currency_from(
+                exchange_currencies.nameFrom,
+                exchange_currencies.nameTo,
+                exchange_currencies.valueFrom,
+                all_currencies,
+            )
+            if exchange_currencies.valueFrom
+            else exchange_currency_to(
+                exchange_currencies.nameFrom,
+                exchange_currencies.nameTo,
+                exchange_currencies.valueTo,
+                all_currencies,
+            )
+        )
+
+        if db_currency_from.amount - operations.withdrawFromAmount < 0:
+            raise HTTPException(
+                status_code=status.HTTP_409_CONFLICT, detail="Not enough money from"
+            )
+
+        db_currency_from.amount -= operations.withdrawFromAmount
+        db_currency_to.amount += operations.topupToAmount
+
+        db.commit()
+    except Exception as exc:
+        logger.error(exc)
+        db.rollback()
+
+def exchange_currency_from(
+    nameFrom: str, nameTo: str, valueFrom: float, all_currencies: ExchangeCurrencies
+) -> ExchangeOperations:
+    operations = ExchangeOperations(
+        nameWithdrawFrom=nameFrom,
+        nameTopUpTo=nameTo,
+        withdrawFromAmount=valueFrom,
+    )
+
+    mid_sum_rub = valueFrom
+
+    if nameFrom != "RUB":
+        cur_from = next(filter(lambda x: x.name == nameFrom, all_currencies))
+        mid_sum_rub = valueFrom / cur_from.rate
+
+    cur_to = next(filter(lambda x: x.name == nameTo, all_currencies))
+    operations.topupToAmount = mid_sum_rub * cur_to.rate
+
+    return operations
+
+
+def exchange_currency_to(
+    nameFrom: str, nameTo: str, valueTo: float, all_currencies: ExchangeCurrencies
+) -> ExchangeOperations:
+    operations = ExchangeOperations(
+        nameWithdrawFrom=nameFrom,
+        nameTopUpTo=nameTo,
+        topupToAmount=valueTo,
+    )
+    cur_from = next(filter(lambda x: x.name == nameFrom, all_currencies))
+
+    if nameTo == "RUB":
+        operations.withdrawFromAmount = valueTo / cur_from.rate
+    elif nameFrom == "RUB":
+        operations.withdrawFromAmount = valueTo * cur_from.rate
+    else:
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    return operations
