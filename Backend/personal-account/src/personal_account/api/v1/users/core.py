@@ -99,3 +99,16 @@ def authenticate_user(*, username: str, password: str, db: Session) -> UserInDB:
             headers={"WWW-Authenticate": "Bearer"},
         )
     return user
+
+
+def get_user(*, username: str, db: Session) -> UserInDB:
+    user = get_user_by_username(username=username, db=db)
+
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="No such user",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+
+    return user

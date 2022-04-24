@@ -9,7 +9,7 @@ from .models import NewsBookAdd, NewsBookPublic
 
 from .core import add_news_book
 
-news_books_router = APIRouter(prefix="/news-book", tags=["news-book"])
+news_books_router = APIRouter(prefix="/api/v1/news-book", tags=["news-book"])
 
 
 @news_books_router.post(

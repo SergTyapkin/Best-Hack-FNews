@@ -149,7 +149,7 @@ async def exchange_currency(
             )
 
         if (
-            exchange_currencies.valueFrom
+            not exchange_currencies.valueFrom
             and exchange_currencies.valueFrom > db_currency_from.amount
         ):
             raise HTTPException(
@@ -194,8 +194,9 @@ async def exchange_currency(
         logger.error(exc)
         db.rollback()
 
+
 def exchange_currency_from(
-    nameFrom: str, nameTo: str, valueFrom: float, all_currencies: ExchangeCurrencies
+    nameFrom: str, nameTo: str, valueFrom: float, all_currencies: CurrencyPublicList
 ) -> ExchangeOperations:
     operations = ExchangeOperations(
         nameWithdrawFrom=nameFrom,
@@ -206,24 +207,27 @@ def exchange_currency_from(
     mid_sum_rub = valueFrom
 
     if nameFrom != "RUB":
-        cur_from = next(filter(lambda x: x.name == nameFrom, all_currencies))
+        cur_from = next(filter(lambda x: x.name == nameFrom, all_currencies.currencies))
         mid_sum_rub = valueFrom / cur_from.rate
 
-    cur_to = next(filter(lambda x: x.name == nameTo, all_currencies))
+    cur_to = next(filter(lambda x: x.name == nameTo, all_currencies.currencies))
     operations.topupToAmount = mid_sum_rub * cur_to.rate
 
     return operations
 
 
 def exchange_currency_to(
-    nameFrom: str, nameTo: str, valueTo: float, all_currencies: ExchangeCurrencies
+    nameFrom: str,
+    nameTo: str,
+    valueTo: float,
+    all_currencies: CurrencyPublicList,
 ) -> ExchangeOperations:
     operations = ExchangeOperations(
         nameWithdrawFrom=nameFrom,
         nameTopUpTo=nameTo,
         topupToAmount=valueTo,
     )
-    cur_from = next(filter(lambda x: x.name == nameFrom, all_currencies))
+    cur_from = next(filter(lambda x: x.name == nameFrom, all_currencies.currencies))
 
     if nameTo == "RUB":
         operations.withdrawFromAmount = valueTo / cur_from.rate

@@ -25,6 +25,16 @@ class UserCreate(CoreModel):
     )
 
 
+class UserEnter(CoreModel):
+    username: str
+    password: str
+
+
+class UserPublicEnter(CoreModel):
+    username: str
+    email: EmailStr
+
+
 class UserUpdate(CoreModel):
     username: Optional[
         Optional[constr(min_length=6, max_length=16, regex="^[a-zA-Z0-9_-]+$")]

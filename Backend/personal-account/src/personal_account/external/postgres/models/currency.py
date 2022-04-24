@@ -9,7 +9,7 @@ class Currency(Base):
 
     id = Column(Integer, autoincrement=True, primary_key=True, index=True, unique=True)
 
-    name = Column(String, unique=True, nullable=False, index=True)
+    name = Column(String, nullable=False, index=True)
     amount = Column(Float, default=0.0)
 
     created_at = Column(DateTime(timezone=True), server_default=func.now())

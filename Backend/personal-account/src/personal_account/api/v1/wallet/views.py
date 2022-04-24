@@ -21,7 +21,7 @@ from .core import (
     exchange_currency,
 )
 
-wallet_router = APIRouter(prefix="/wallet", tags=["wallet"])
+wallet_router = APIRouter(prefix="/api/v1/wallet", tags=["wallet"])
 
 
 @wallet_router.post(
@@ -105,7 +105,7 @@ async def get_all_currencies_view():
 
 @wallet_router.post(
     "/exchange",
-    response_model=str,
+    # response_model=str,
     name="wallet:exchange-currencies",
     status_code=status.HTTP_200_OK,
 )
@@ -122,4 +122,4 @@ async def get_all_currencies_view(
         db=db,
     )
 
-    return "ok"
+    return {}
