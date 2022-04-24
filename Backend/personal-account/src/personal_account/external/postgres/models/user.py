@@ -1,8 +1,16 @@
-from sqlalchemy import Column, Integer, String, DateTime, Boolean, ForeignKey
+from ast import In
+from sqlalchemy import Column, ForeignKey, Integer, String, DateTime, Boolean, Table
 from sqlalchemy.sql import func
 from sqlalchemy.orm import relationship
 
 from ..db import Base
+
+users_news_books = Table(
+    "users_news_books",
+    Base.metadata,
+    Column("user_id", Integer, ForeignKey("users.id")),
+    Column("news_book_id", Integer, ForeignKey("news_books.id")),
+)
 
 
 class User(Base):
@@ -32,3 +40,12 @@ class User(Base):
 
     def __repr__(self):
         return f"User(username={self.username}, email={self.email})"
+
+
+class NewsBooks(Base):
+    __tablename__ = "news_books"
+
+    id = Column(Integer, autoincrement=True, primary_key=True, index=True, unique=True)
+    name = Column(String, nullable=False)
+
+    __mapper_args__ = {"eager_defaults": True}
