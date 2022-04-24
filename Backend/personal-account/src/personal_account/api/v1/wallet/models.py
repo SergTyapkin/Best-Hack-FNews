@@ -9,12 +9,8 @@ class CurrencyBase(CoreModel):
     name: Optional[str]
     amount: Optional[float]
 
-    wallet_id: Optional[int]
-
 
 class CurrencyTopUp(CoreModel):
-    username: int
-
     name: constr(min_length=1, regex="^[a-zA-Z]+$")
     amount: confloat(ge=0.0)
 

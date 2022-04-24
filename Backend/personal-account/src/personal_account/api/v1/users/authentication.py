@@ -6,6 +6,7 @@ from fastapi import HTTPException, Request
 import bcrypt
 import jwt
 from passlib.context import CryptContext
+from loguru import logger
 
 from .models import UserInDB, UserPasswordUpdate
 from .token import JWTCredentials, JWTMeta, JWTPayload
@@ -122,5 +123,20 @@ class AuthService:
                 >= datetime.timestamp(datetime.utcnow())
                 else None
             )
-        except:
+        except Exception as exc:
+            logger.error(exc)
             return {}
+
+    @staticmethod
+    def get_usernameJWT(token: str) -> str:
+        try:
+            decoded_token = jwt.decode(
+                token,
+                str(settings.secret_key),
+                algorithms=[settings.jwt_algorithm],
+            )
+
+            return decoded_token.get("username")
+        except Exception as exc:
+            logger.error(exc)
+            return ""
