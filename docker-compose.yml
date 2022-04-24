@@ -14,14 +14,13 @@ services:
 
   backend:
     build:
-      context: ./Backend
+      context: ./Backend/personal-account
       dockerfile: Dockerfile
     command: bash -c "alembic upgrade head && uvicorn src.__main__:app --host ${PERSONAL_ACCOUNT_BACKEND} --port ${PERSONAL_ACCOUNT_PORT} --reload"
     ports:
       - ${PERSONAL_ACCOUNT_PORT}:${PERSONAL_ACCOUNT_PORT}
     depends_on:
       - postgres-db
-
   frontend:
     build:
       context: ./Frontend
