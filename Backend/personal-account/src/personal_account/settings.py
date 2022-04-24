@@ -16,6 +16,10 @@ class Settings(BaseSettings):
     secret_key: str
 
     cbr_link: str
+    
+    vk_api_link_newsfeed: str
+    vk_api_v: str
+    vk_api_access_token: str
 
     class Config:
         env_file = ".env"

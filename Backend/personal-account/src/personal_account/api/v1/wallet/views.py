@@ -105,7 +105,6 @@ async def get_all_currencies_view():
 
 @wallet_router.post(
     "/exchange",
-    # response_model=str,
     name="wallet:exchange-currencies",
     status_code=status.HTTP_200_OK,
 )

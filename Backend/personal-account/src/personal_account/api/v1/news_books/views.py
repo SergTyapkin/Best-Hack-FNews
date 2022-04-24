@@ -1,5 +1,4 @@
-from audioop import add
-from fastapi import APIRouter, Body, Depends, status
+from fastapi import APIRouter, Body, Depends, status, Cookie
 
 from sqlalchemy.orm import Session
 
@@ -21,9 +20,10 @@ news_books_router = APIRouter(prefix="/api/v1/news-book", tags=["news-book"])
 async def add_news_book_view(
     news_book_add: NewsBookAdd = Body(..., embed=True),
     db: Session = Depends(get_db),
-    token: str = Depends(JWTBearer()),
+    session: str = Cookie(None),
 ):
-    username = AuthService.get_usernameJWT(token)
+    JWTBearer.verify_jwt(session)
+    username = AuthService.get_usernameJWT(session)
 
     news_book = add_news_book(
         username=username,

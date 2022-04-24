@@ -19,6 +19,7 @@ passlib = {extras = ["bcrypt"], version = "^1.7.4"}
 python-multipart = "^0.0.5"
 requests = "^2.27.1"
 httpx = "^0.22.0"
+kafka-python = "^2.0.2"
 
 [tool.poetry.dev-dependencies]
 black = "^22.3.0"
