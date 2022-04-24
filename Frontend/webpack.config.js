@@ -39,9 +39,9 @@ module.exports = {
         },
         proxy: {
             '/api': {
-                target: '',
+                target: 'http://192.168.43.216:8080',
                 secure: false,
-                changeOrigin: true
+                changeOrigin: false
             }
         }
     },
