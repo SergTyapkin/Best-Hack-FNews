@@ -87,10 +87,10 @@ borderColorInputsFocus = textColor2
     <div class="columns-flex-container">
       <div class="info-column">
         <div class="inputs">
-          <div><label>Логин</label> <input v-model="user.username" type="text" class="plate"/></div>
-          <div><label>Имя</label> <input v-model="user.name" type="text" class="plate"/></div>
-          <div><label>Email</label> <input v-model="user.email" type="email" class="plate"/></div>
-          <div><label>Пароль</label> <input v-model="user.password" type="password" class="plate"/></div>
+          <div><label>Логин</label> <input v-model="user.username" type="text" class="plate" autocomplete="off"/></div>
+          <div><label>Имя</label> <input v-model="user.name" type="text" class="plate" autocomplete="off"/></div>
+          <div><label>Email</label> <input v-model="user.email" type="email" class="plate" autocomplete="off"/></div>
+          <div><label>Пароль</label> <input v-model="user.password" type="password" class="plate" autocomplete="off"/></div>
           <div class="submit-buttons">
             <button @click="logOut" class="danger">Выйти</button>
             <button @click="changeData">Изменить</button>

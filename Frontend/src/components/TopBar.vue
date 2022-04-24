@@ -61,7 +61,7 @@ height = 20%
 
 <template>
   <div class="toolbar">
-    <img class="logo" src="../res/logo.svg" alt="Logo" />
+    <router-link to="/"><img class="logo" src="../res/logo.svg" alt="Logo" /></router-link>
     <div class="right-container">
       <div class="abs-container">
         <input v-model="searchText" type="search" placeholder="поиск" />

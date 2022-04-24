@@ -5,7 +5,7 @@ import User from "../models/user";
 const Store = new Vuex.Store({
   state: {
     user: new User(),
-    api: new Api('/api'),
+    api: new Api('/api/v1'),
   },
   mutations: {
     SET_USER: (state, userData) => {

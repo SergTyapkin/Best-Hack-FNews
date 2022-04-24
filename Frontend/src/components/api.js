@@ -1,8 +1,17 @@
 import ApiRequest from "../utils/requests";
 
 export default class Api extends ApiRequest {
-    signUp = (username, email, password, name) => this.post('/users/', {username, email, password, name});
-    signIn = (username, password) => this.get('/user/auth/', {username, password});
+    signUp = (username, email, password, name) => this.post('/user', {
+        new_user: {
+            username: username,
+            email: email,
+            password: password,
+            name: name
+        }
+    });
+    signIn = (username, password) => this.post('/user/login/token', {
+        form_data: {username, password}
+    });
     getUser = () => {
         return {
             ok_: true,
@@ -15,32 +24,44 @@ export default class Api extends ApiRequest {
     signOut = () => this.delete('/user/session');
     updatePassword = (oldPassword, newPassword) => this.put('/user/password', {oldPassword, newPassword});
 
-    getHistory = () => /*{
+    getHistory = () => {
         return {
             ok_: true,
             actions: [{action: 'topup', message: '+ 2150 €', date: 'timestamp'}, {action: 'withdraw', message: '- 100 $', date: 'timestamp'}]
         };
-    }*/this.get('/history');
-    getUserBalance = () => {
+    }//this.get('/history');
+    getUserBalance = () => /*{
         return {
             ok_: true,
             currencies: [
-                {name: 'uah', value: 10},
-                {name: 'krw', value: 1120.4},
-                {name: 'usd', value: 0.632},
+                {name: 'uah', amount: 10},
+                {name: 'krw', amount: 1120.4},
+                {name: 'usd', amount: 0.632},
             ],
         }
-    }//this.get('/balance/currencies');
+    }*/this.get('/wallet/currencies');
 
     getCurrencies = () => {
         return {
             ok_: true,
             currencies: [
-                {name: "EUR", value: '88', percents: '3.35'},
-                {name: "KZT", value: '7.3', percents: '2.8'},
-                {name: "XDR", value: '34.3', percents: '-6.40'},
-                {name: "TRY", value: '3324.3', percents: '-2.40'},
-                {name: "INR", value: '398.2', percents: '-9.40'},
+                {name: "EUR", amount: '88'},
+                {name: "KZT", amount: '7.3'},
+                {name: "XDR", amount: '34.3'},
+                {name: "TRY", amount: '3324.3'},
+                {name: "INR", amount: '398.2'},
+            ]
+        }
+    }//this.get('/wallet/currencies');
+    getWatchingCurrencies = () => {
+        return {
+            ok_: true,
+            currencies: [
+                {name: "EUR", rate: '88', percents: '3.35'},
+                {name: "KZT", rate: '7.3', percents: '2.8'},
+                {name: "XDR", rate: '34.3', percents: '-6.40'},
+                {name: "TRY", rate: '3324.3', percents: '-2.40'},
+                {name: "INR", rate: '398.2', percents: '-9.40'},
             ]
         }
     }//this.get('/wallet/currencies');
@@ -48,30 +69,30 @@ export default class Api extends ApiRequest {
         return {
             ok_: true,
             currencies: [
-                {name: "EUR", value: '88', percents: '3.35'},
-                {name: "EUR", value: '88', percents: '3.35'},
-                {name: "EUR", value: '88', percents: '3.35'},
-                {name: "EUR", value: '88', percents: '3.35'},
-                {name: "EUR", value: '88', percents: '3.35'},
-                {name: "EUR", value: '88', percents: '3.35'},
-                {name: "EUR", value: '88', percents: '3.35'},
-                {name: "EUR", value: '88', percents: '3.35'},
-                {name: "KZT", value: '7.3', percents: '2.8'},
-                {name: "XDR", value: '34.3', percents: '-6.40'},
-                {name: "XDR", value: '34.3', percents: '-6.40'},
-                {name: "XDR", value: '34.3', percents: '-6.40'},
-                {name: "XDR", value: '34.3', percents: '-6.40'},
-                {name: "XDR", value: '34.3', percents: '-6.40'},
-                {name: "TRY", value: '3324.3', percents: '-2.40'},
-                {name: "INR", value: '398.2', percents: '-9.40'},
-                {name: "INR", value: '398.2', percents: '-9.40'},
-                {name: "INR", value: '398.2', percents: '-9.40'},
-                {name: "INR", value: '398.2', percents: '-9.40'},
-                {name: "INR", value: '398.2', percents: '-9.40'},
-                {name: "INR", value: '398.2', percents: '-9.40'},
-                {name: "INR", value: '398.2', percents: '-9.40'},
-                {name: "INR", value: '398.2', percents: '-9.40'},
-                {name: "INR", value: '398.2', percents: '-9.40'},
+                {name: "EUR", rate: '88', percents: '3.35'},
+                {name: "EUR", rate: '88', percents: '3.35'},
+                {name: "EUR", rate: '88', percents: '3.35'},
+                {name: "EUR", rate: '88', percents: '3.35'},
+                {name: "EUR", rate: '88', percents: '3.35'},
+                {name: "EUR", rate: '88', percents: '3.35'},
+                {name: "EUR", rate: '88', percents: '3.35'},
+                {name: "EUR", rate: '88', percents: '3.35'},
+                {name: "KZT", rate: '7.3', percents: '2.8'},
+                {name: "XDR", rate: '34.3', percents: '-6.40'},
+                {name: "XDR", rate: '34.3', percents: '-6.40'},
+                {name: "XDR", rate: '34.3', percents: '-6.40'},
+                {name: "XDR", rate: '34.3', percents: '-6.40'},
+                {name: "XDR", rate: '34.3', percents: '-6.40'},
+                {name: "TRY", rate: '3324.3', percents: '-2.40'},
+                {name: "INR", rate: '398.2', percents: '-9.40'},
+                {name: "INR", rate: '398.2', percents: '-9.40'},
+                {name: "INR", rate: '398.2', percents: '-9.40'},
+                {name: "INR", rate: '398.2', percents: '-9.40'},
+                {name: "INR", rate: '398.2', percents: '-9.40'},
+                {name: "INR", rate: '398.2', percents: '-9.40'},
+                {name: "INR", rate: '398.2', percents: '-9.40'},
+                {name: "INR", rate: '398.2', percents: '-9.40'},
+                {name: "INR", rate: '398.2', percents: '-9.40'},
             ]
         }//this.get('/wallet/currencies/all');
     }
@@ -119,13 +140,13 @@ export default class Api extends ApiRequest {
         }
     }
 
-    doExchange = ({nameFrom, nameTo, valueTo}) => this.post('/wallet/exchange', {nameFrom, nameTo, valueTo});
+    doExchange = ({nameFrom, nameTo, valueTo, valueFrom}) => this.post('/wallet/exchange', {nameFrom, nameTo, valueTo, valueFrom});
 
     addCurrency = (name) => this.post('/wallet/currency', {name});
     removeCurrency = (name) => this.delete('/wallet/currency', {name});
 
-    topup = (value) => this.post('/wallet/topup', {value});
-    withdraw = (value) => this.post('/wallet/withdraw', {value});
+    topup = (value) => this.post('/wallet/topup', {currency: {name: "RUB", amount: value}});
+    withdraw = (value) => this.post('/wallet/withdraw', {currency: {name: "RUB", amount: value}});
 
     getTopics = () => {
         return {

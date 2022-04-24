@@ -39,9 +39,9 @@ module.exports = {
         },
         proxy: {
             '/api': {
-                target: 'https://f8a9-86-62-78-69.eu.ngrok.io',
+                target: 'http://192.168.43.216:8080',
                 secure: false,
-                changeOrigin: true
+                changeOrigin: false
             }
         }
     },

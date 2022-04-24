@@ -73,7 +73,7 @@ div.balance-plate
 
     <div class="currencies">
       <div class="currency" v-for="cur in currencies">
-        <span>{{ cur.value }}</span>
+        <span>{{ cur.amount }}</span>
         <span class="symbol">{{ cur.symbol }}</span>
       </div>
     </div>
@@ -137,9 +137,9 @@ export default {
     async doAction() {
       let res;
       if (this.isTopUp)
-        res = this.$store.state.api.topup(this.value);
+        res = await this.$store.state.api.topup(this.value);
       else
-        res = this.$store.state.api.withdraw(this.value);
+        res = await this.$store.state.api.withdraw(this.value);
 
       if (res.ok_) {
         this.$store.state.popups.success("Успешная операция", (this.isTopUp ? "зачислено " : "выведено ") + this.value + "₽");

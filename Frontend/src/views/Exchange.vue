@@ -186,7 +186,7 @@ borderColorInputsFocus = textColor2
         <div class="title">Обмен валют</div>
       </div>
       <span class="half balance">
-        <Balance></Balance>
+        <Balance ref="balance"></Balance>
       </span>
     </div>
 
@@ -234,16 +234,18 @@ borderColorInputsFocus = textColor2
         <div class="hint">Нажмите на валюту, чтобы добавить её в отслеживаемые</div>
         <div class="currencies-container scrollable">
           <Currency v-for="(cur, idx) in allCurrencies" class="currency-plate" ref="currencies" @click="moveCurrencyToMy(idx)"
-                    :name="cur.name" :value="cur.value" :percents="cur.percents" :symbol="cur.symbol"></Currency>
+                    :name="cur.name" :value="cur.rate" :percents="cur.percents" :symbol="cur.symbol"></Currency>
         </div>
       </div>
 
 
       <div class="currencies-column">
-        <div class="hint">Нажмите на валюту, убрать её из отслеживаемых</div>
+        <div v-if="isEditorOpened" class="hint">Нажмите на валюту, чтобы убрать её из отслеживаемых</div>
+        <div v-else class="hint">Нажмите на валюту, чтобы обменять рубли на неё, или наоборот</div>
+
         <div class="currencies-container">
           <Currency v-for="(cur, idx) in currencies" class="currency-plate" ref="currencies" @click="selectCurrency(idx)"
-                    :name="cur.name" :value="cur.value" :percents="cur.percents" :symbol="cur.symbol"></Currency>
+                    :name="cur.name" :value="cur.rate" :percents="cur.percents" :symbol="cur.symbol"></Currency>
         </div>
       </div>
     </div>
@@ -293,22 +295,23 @@ export default {
       }
 
       let response;
-      if (this.isSell)
+      if (!this.isSell)
         response = await this.$store.state.api.doExchange({
           nameFrom: 'RUB',
           nameTo: this.selectedCurrency.name,
-          value: this.exchangeValue,
+          valueTo: this.exchangeValue,
         });
       else
         response = await this.$store.state.api.doExchange({
           nameTo: 'RUB',
           nameFrom: this.selectedCurrency.name,
-          value: this.exchangeValue,
+          valueFrom: this.exchangeValue,
         });
 
       if (response.ok_) {
         this.$store.state.popups.success('Успешный обмен');
         this.selectedCurrency = null;
+        await this.$refs.balance.updateBalance();
         return;
       }
 
@@ -332,7 +335,7 @@ export default {
     },
 
     async getCurrencies(isAll = false) {
-      const currencies = await this.$store.state.api[isAll ? 'getAllCurrencies' : 'getCurrencies']();
+      const currencies = await this.$store.state.api[isAll ? 'getAllCurrencies' : 'getWatchingCurrencies']();
       if (!currencies.ok_) {
         this.$store.state.popups.error('Не удалось получить список валют');
         return [];
@@ -415,6 +418,10 @@ export default {
     },
 
     async opedEditCurrencies() {
+      if (this.selectedCurrency) {
+        this.selectedCurrency.isSelected = false;
+        this.selectedCurrency = undefined;
+      }
       this.selectedCurrency = null;
       this.isEditorOpened = true;
       this.allCurrencies = await this.getCurrencies(true);
