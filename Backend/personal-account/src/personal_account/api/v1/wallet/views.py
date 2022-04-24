@@ -1,5 +1,3 @@
-from typing import Optional
-
 from fastapi import APIRouter, Body, Cookie, Depends, status
 from loguru import logger
 
@@ -7,9 +5,19 @@ from sqlalchemy.orm import Session
 
 from ....external.postgres.db_utils import get_db
 from ..users.authentication import AuthService, JWTBearer
-from .models import CurrencyTopUp, CurrencyPublic
+from .models import (
+    CurrencyTopUp,
+    CurrencyPublic,
+    CurrencyPublicListWallet,
+    CurrencyPublicList,
+)
 
-from .core import topup_wallet, withdraw_wallet
+from .core import (
+    topup_wallet,
+    withdraw_wallet,
+    get_all_currencies,
+    get_all_currencies_in_wallet,
+)
 
 wallet_router = APIRouter(prefix="/wallet", tags=["wallet"])
 
@@ -58,3 +66,37 @@ async def withdraw_wallet_view(
     )
 
     return CurrencyPublic(**withdraw_data.dict())
+
+
+@wallet_router.get(
+    "/currencies",
+    response_model=CurrencyPublicListWallet,
+    name="wallet:get_all_currencies",
+    status_code=status.HTTP_200_OK,
+)
+async def get_all_currencies_in_wallet_view(
+    session: str = Cookie(None),
+    db: Session = Depends(get_db),
+):
+    JWTBearer.verify_jwt(session)
+    username = AuthService.get_usernameJWT(session)
+
+    all_currencies = get_all_currencies_in_wallet(
+        username=username,
+        db=db,
+    )
+
+    return all_currencies
+
+
+@wallet_router.get(
+    "/currencies/all",
+    response_model=CurrencyPublicList,
+    name="wallet:get_all_currencies",
+    status_code=status.HTTP_200_OK,
+)
+async def get_all_currencies_view():
+    all_currencies = await get_all_currencies()
+
+    return all_currencies
+

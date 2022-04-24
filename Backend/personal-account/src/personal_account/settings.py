@@ -15,6 +15,8 @@ class Settings(BaseSettings):
     token_issuer: str = "best-hack.io"
     secret_key: str
 
+    cbr_link: str
+
     class Config:
         env_file = ".env"
         env_file_encoding = "utf-8"

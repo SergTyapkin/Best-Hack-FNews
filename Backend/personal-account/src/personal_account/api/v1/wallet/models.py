@@ -1,6 +1,6 @@
 from typing import Optional
 
-from pydantic import constr, confloat
+from pydantic import constr, confloat, BaseModel
 
 from ..base.models.core import CoreModel, IDModelMixin, DateTimeModelMixin
 
@@ -28,3 +28,16 @@ class CurrencyInDB(IDModelMixin, DateTimeModelMixin, CurrencyBase):
 class CurrencyPublic(IDModelMixin, DateTimeModelMixin, CurrencyBase):
     class Config:
         orm_mode = True
+
+
+class CurrencyPublicListWallet(BaseModel):
+    currencies: list[CurrencyPublic]
+
+
+class ExternalCurrency(BaseModel):
+    name: str
+    rate: float
+
+
+class CurrencyPublicList(BaseModel):
+    currencies: list[ExternalCurrency]
