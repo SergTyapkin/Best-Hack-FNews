@@ -3,14 +3,14 @@ import ApiRequest from "../utils/requests";
 export default class Api extends ApiRequest {
     signUp = (username, email, password, name) => this.post('/users/', {username, email, password, name});
     signIn = (username, password) => this.get('/user/auth/', {username, password});
-    getUser = () => /*{
+    getUser = () => {
         return {
             ok_: true,
             username: 'serg',
             email: 'some@mail.ru',
             name: 'Сергей',
         }
-    }*/this.get('/user');
+    }//this.get('/user');
     updateUser = ({username, email, name}) => this.put('/user', {username, email, name});
     signOut = () => this.delete('/user/session');
     updatePassword = (oldPassword, newPassword) => this.put('/user/password', {oldPassword, newPassword});
@@ -21,7 +21,7 @@ export default class Api extends ApiRequest {
             actions: [{action: 'topup', message: '+ 2150 €', date: 'timestamp'}, {action: 'withdraw', message: '- 100 $', date: 'timestamp'}]
         };
     }*/this.get('/history');
-    getUserBalance = () => /*{
+    getUserBalance = () => {
         return {
             ok_: true,
             currencies: [
@@ -30,7 +30,7 @@ export default class Api extends ApiRequest {
                 {name: 'usd', value: 0.632},
             ],
         }
-    }*/this.get('/balance/currencies');
+    }//this.get('/balance/currencies');
 
     getCurrencies = () => {
         return {
@@ -123,4 +123,7 @@ export default class Api extends ApiRequest {
 
     addCurrency = (name) => this.post('/currency', {name});
     removeCurrency = (name) => this.delete('/currency', {name});
+
+    topup = (value) => this.post('/wallet/topup', {value});
+    withdraw = (value) => this.post('/wallet/withdraw', {value});
 }

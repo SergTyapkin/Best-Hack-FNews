@@ -69,6 +69,8 @@ height = 20%
       </div>
 
       <router-link to="#" class="icon"><img src="../res/bell.svg" alt="" /></router-link>
+      <router-link to="/" class="icon"><img src="../res/news.svg" alt="" /></router-link>
+      <router-link to="/exchange" class="icon"><img src="../res/exchange.svg" alt="" /></router-link>
       <router-link to="/profile" class="icon"><img src="../res/profile.svg" alt="" /></router-link>
     </div>
   </div>
