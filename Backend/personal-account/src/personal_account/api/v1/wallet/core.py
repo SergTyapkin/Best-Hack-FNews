@@ -1,10 +1,8 @@
 from sqlalchemy.orm import Session
-from fastapi import HTTPException, status
 
 from .models import CurrencyTopUp, CurrencyInDB
-
-from ....external.postgres.models.user import User
 from ....external.postgres.models.currency import Currency
+from ..base.utils import get_user_by_username
 
 
 def topup_wallet(
@@ -33,14 +31,3 @@ def topup_wallet(
     db.commit()
 
     return CurrencyInDB(db_currency.__dict__)
-
-
-def get_user_by_username(*, username: str, db: Session) -> User:
-    user_record = db.query(User).filter(User.username == username).first()
-
-    if not user_record:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail="No such user"
-        )
-
-    return user_record

@@ -1,10 +1,9 @@
 from fastapi import APIRouter, Body, Depends, status
-from loguru import logger
 
 from sqlalchemy.orm import Session
 
 from ....external.postgres.db_utils import get_db
-from ..users.authentication import AuthService, JWTBearer, AuthException
+from ..users.authentication import AuthService, JWTBearer
 from .models import CurrencyTopUp, CurrencyPublic
 
 from .core import topup_wallet

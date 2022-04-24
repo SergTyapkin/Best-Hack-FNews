@@ -28,6 +28,7 @@ class User(Base):
     is_staff = Column(Boolean, default=False)
 
     wallet = relationship("Wallet", uselist=False, backref="users")
+    news_books = relationship("NewsBooks", secondary=users_news_books)
 
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(

@@ -10,6 +10,7 @@ from .api.app_status import status_router
 from .external.postgres.db import SQLALCHEMY_DATABASE_URL
 from .api.v1.users.views import user_router
 from .api.v1.wallet.views import wallet_router
+from .api.v1.news_books.views import news_books_router
 
 app = FastAPI(
     title="Personal Account V1",
@@ -34,6 +35,7 @@ def create_app():
     app.include_router(status_router)
     app.include_router(user_router)
     app.include_router(wallet_router)
+    app.include_router(news_books_router)
 
     app.add_middleware(
         CORSMiddleware,
