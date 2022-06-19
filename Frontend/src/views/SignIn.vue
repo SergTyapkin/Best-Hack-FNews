@@ -7,9 +7,19 @@ logo-size = 140px
     margin-bottom 20px
 </style>
 
+<style lang="stylus" scoped>
+.dev-info
+  margin-top 100px
+  text-align center
+</style>
+
 <template>
   <BluredBg></BluredBg>
 
+  <div class="dev-info">
+    У этого сайта нет бэкенда, потому что бэкендер - <small><s>пидор</s></small> не успел<br>
+    <small>Ответы сервера на самые необходимые запросы <i>(вход, получение валют, ...)</i> просто забиты текстом. Остальные падают, и тут ничего не поделать</small>
+  </div>
   <form class="form centered-horizontal" novalidate @submit.prevent="signIn">
     <img class="logo" src="../res/logo.svg" alt="BH Exchange" />
 
@@ -32,7 +42,7 @@ logo-size = 140px
 
     <div class="submit-container">
       <input type="submit" value="Войти">
-      <div class="text info">Ещё нет аккаунта?<router-link to="/signup"> Нажмите, чтобы создать.</router-link></div>
+      <div class="text info">Ещё нет аккаунта?<router-link :to="'/signup'"> Нажмите, чтобы создать.</router-link></div>
     </div>
   </form>
 </template>
@@ -50,7 +60,8 @@ export default {
       password: '',
 
       enabled: true,
-      errors: {}
+      errors: {},
+
     }
   },
 

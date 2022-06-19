@@ -24,7 +24,6 @@
 
     .form
       position relative
-      cursor default
 
       .confirm-button
         width 45%

@@ -8,15 +8,17 @@ import Profile from '../views/Profile.vue'
 import SignUp from '../views/SignUp.vue'
 import Page404 from '../views/Page404.vue'
 
+export const BASE_URL_PATH = '/fnews';
+
 export default function createVueRouter(Store) {
     const routes = [
-        {path: '/', component: News, meta: {loginRequired: true}},
-        {path: '/setup', component: SetupNews, meta: {loginRequired: true}},
-        {path: '/exchange', component: Exchange, meta: {loginRequired: true}},
-        {path: '/signin', component: SignIn, meta: {noLoginRequired: true}},
-        {path: '/signup', component: SignUp, meta: {noLoginRequired: true}},
-        {path: '/profile', component: Profile, meta: {loginRequired: true}},
-        {path: '/:pathMatch(.*)*', component: Page404}
+        {path: BASE_URL_PATH + '/', component: News, meta: {loginRequired: true}},
+        {path: BASE_URL_PATH + '/setup', component: SetupNews, meta: {loginRequired: true}},
+        {path: BASE_URL_PATH + '/exchange', component: Exchange, meta: {loginRequired: true}},
+        {path: BASE_URL_PATH + '/signin', component: SignIn, meta: {noLoginRequired: true}},
+        {path: BASE_URL_PATH + '/signup', component: SignUp, meta: {noLoginRequired: true}},
+        {path: BASE_URL_PATH + '/profile', component: Profile, meta: {loginRequired: true}},
+        {path: BASE_URL_PATH + '/:pathMatch(.*)*', component: Page404}
     ]
 
     const Router = createRouter({
@@ -31,27 +33,48 @@ export default function createVueRouter(Store) {
             router_got_user = true;
         }
 
+        const baseBartRedirect = {
+            path: BASE_URL_PATH + removeBasePartOnStart(to.fullPath),
+        }
+        const notLoginedRedirect = {
+            path: BASE_URL_PATH + '/signin',
+        }
+        const loginedRedirect = {
+            path: BASE_URL_PATH + '/profile',
+        }
+        console.log(from, to);
+
+        function smartBasePartRedirect() {
+            if (isStartsOnBasePart(to.fullPath))
+                next();
+            else
+                next(baseBartRedirect);
+        }
+
         if (to.matched.some(record => record.meta.loginRequired)) {
             if (Store.state.user.isLogined) {
-                next();
+                smartBasePartRedirect();
                 return;
             }
-            next({
-                path: '/signin',
-                params: {nextUrl: to.fullPath}
-            });
+            next(notLoginedRedirect);
+            return;
         } else if (to.matched.some(record => record.meta.noLoginRequired)) {
             if (!Store.state.user.isLogined) {
-                next();
+                smartBasePartRedirect();
                 return;
             }
-            next({
-                path: '/profile',
-                params: {nextUrl: to.fullPath}
-            });
+            next(loginedRedirect);
+            return;
         }
-        next();
+        smartBasePartRedirect();
     });
 
     return Router;
+}
+
+function isStartsOnBasePart(string) {
+    return new RegExp(`^${BASE_URL_PATH}`, 'i').test(string);
+}
+function removeBasePartOnStart(string) {
+    return string.replace(new RegExp(`^${BASE_URL_PATH}`, 'i'), '');
 }

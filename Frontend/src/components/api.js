@@ -9,19 +9,33 @@ export default class Api extends ApiRequest {
             name: name
         }
     });
-    signIn = (username, password) => this.post('/user/login/token', {
-        form_data: {username, password}
-    });
-    getUser = () => /*{
+    isLogined = false;
+    signIn = (username, password) => {
+        this.isLogined = true;
         return {
+            ok_: true,
+        }
+    }/*this.post('/user/login/token', {
+        form_data: {username, password}
+    });*/
+    getUser = () => {
+        const userData =  {
             ok_: true,
             username: 'serg',
             email: 'some@mail.ru',
             name: 'Сергей',
-        }
-    }*/this.get('/user');
+        };
+        if (!this.isLogined)
+            userData.ok_ = false;
+        return userData;
+    }//this.get('/user');
     updateUser = ({username, email, name}) => this.put('/user', {username, email, name});
-    signOut = () => this.delete('/user/session');
+    signOut = () => {
+        this.isLogined = false;
+        return {
+            ok_: true,
+        }
+    }//this.delete('/user/session');
     updatePassword = (oldPassword, newPassword) => this.put('/user/password', {oldPassword, newPassword});
 
     getHistory = () => {
@@ -69,35 +83,45 @@ export default class Api extends ApiRequest {
         return {
             ok_: true,
             currencies: [
-                {name: "EUR", rate: '88', percents: '3.35'},
-                {name: "EUR", rate: '88', percents: '3.35'},
-                {name: "EUR", rate: '88', percents: '3.35'},
-                {name: "EUR", rate: '88', percents: '3.35'},
-                {name: "EUR", rate: '88', percents: '3.35'},
-                {name: "EUR", rate: '88', percents: '3.35'},
-                {name: "EUR", rate: '88', percents: '3.35'},
-                {name: "EUR", rate: '88', percents: '3.35'},
-                {name: "KZT", rate: '7.3', percents: '2.8'},
-                {name: "XDR", rate: '34.3', percents: '-6.40'},
-                {name: "XDR", rate: '34.3', percents: '-6.40'},
-                {name: "XDR", rate: '34.3', percents: '-6.40'},
-                {name: "XDR", rate: '34.3', percents: '-6.40'},
-                {name: "XDR", rate: '34.3', percents: '-6.40'},
-                {name: "TRY", rate: '3324.3', percents: '-2.40'},
-                {name: "INR", rate: '398.2', percents: '-9.40'},
-                {name: "INR", rate: '398.2', percents: '-9.40'},
-                {name: "INR", rate: '398.2', percents: '-9.40'},
-                {name: "INR", rate: '398.2', percents: '-9.40'},
-                {name: "INR", rate: '398.2', percents: '-9.40'},
-                {name: "INR", rate: '398.2', percents: '-9.40'},
-                {name: "INR", rate: '398.2', percents: '-9.40'},
-                {name: "INR", rate: '398.2', percents: '-9.40'},
-                {name: "INR", rate: '398.2', percents: '-9.40'},
+                {name: "AUD", rate: '88', percents: '3.35'},
+                {name: "AZN", rate: '88', percents: '3.35'},
+                {name: "GBP", rate: '88', percents: '3.35'},
+                {name: "AMD", rate: '88', percents: '3.35'},
+                {name: "BYN", rate: '88', percents: '3.35'},
+                {name: "BRL", rate: '88', percents: '3.35'},
+                {name: "HUF", rate: '88', percents: '3.35'},
+                {name: "HKD", rate: '88', percents: '3.35'},
+                {name: "DKK", rate: '7.3', percents: '2.8'},
+                {name: "USD", rate: '34.3', percents: '-6.40'},
+                {name: "EUR", rate: '34.3', percents: '-6.40'},
+                {name: "INR", rate: '34.3', percents: '-6.40'},
+                {name: "KZT", rate: '34.3', percents: '-6.40'},
+                {name: "CAD", rate: '34.3', percents: '-6.40'},
+                {name: "KGS", rate: '3324.3', percents: '-2.40'},
+                {name: "CNY", rate: '398.2', percents: '-9.40'},
+                {name: "MDL", rate: '398.2', percents: '-9.40'},
+                {name: "NOK", rate: '398.2', percents: '-9.40'},
+                {name: "PLN", rate: '398.2', percents: '-9.40'},
+                {name: "RON", rate: '398.2', percents: '-9.40'},
+                {name: "XDR", rate: '398.2', percents: '-9.40'},
+                {name: "SGD", rate: '398.2', percents: '-9.40'},
+                {name: "TJS", rate: '398.2', percents: '-9.40'},
+                {name: "TRY", rate: '398.2', percents: '-9.40'},
+                {name: "TMT", rate: '398.2', percents: '-9.40'},
+                {name: "UZS", rate: '398.2', percents: '-9.40'},
+                {name: "UAH", rate: '398.2', percents: '-9.40'},
+                {name: "CZK", rate: '398.2', percents: '-9.40'},
+                {name: "SEK", rate: '398.2', percents: '-9.40'},
+                {name: "CHF", rate: '398.2', percents: '-9.40'},
+                {name: "ZAR", rate: '398.2', percents: '-9.40'},
+                {name: "KRW", rate: '398.2', percents: '-9.40'},
+                {name: "JPY", rate: '398.2', percents: '-9.40'},
+                {name: "RUB", rate: '1', percents: '0'},
             ]
         }//this.get('/wallet/currencies/all');
     }
 
-    getNews = () => /*{
+    getNews = () => {
         return {
             ok_: true,
             news: [
@@ -138,7 +162,7 @@ export default class Api extends ApiRequest {
                     tags: []},
             ]
         }
-    }*/this.get('/news');
+    }//this.get('/news');
 
     doExchange = ({nameFrom, nameTo, valueTo, valueFrom}) => this.post('/wallet/exchange', {nameFrom, nameTo, valueTo, valueFrom});
 

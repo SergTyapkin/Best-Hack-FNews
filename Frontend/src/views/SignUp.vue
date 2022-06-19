@@ -57,7 +57,8 @@ export default {
       passwordConfirm: '',
 
       enabled: true,
-      errors: {}
+      errors: {},
+
     }
   },
 
