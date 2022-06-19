@@ -7,6 +7,7 @@ import SetupNews from '../views/SetupNews.vue'
 import Profile from '../views/Profile.vue'
 import SignUp from '../views/SignUp.vue'
 import Page404 from '../views/Page404.vue'
+import Dashboard from "../views/Dashboard.vue";
 
 export const BASE_URL_PATH = '/fnews';
 
@@ -18,6 +19,7 @@ export default function createVueRouter(Store) {
         {path: BASE_URL_PATH + '/signin', component: SignIn, meta: {noLoginRequired: true}},
         {path: BASE_URL_PATH + '/signup', component: SignUp, meta: {noLoginRequired: true}},
         {path: BASE_URL_PATH + '/profile', component: Profile, meta: {loginRequired: true}},
+        {path: BASE_URL_PATH + '/dashboard', component: Dashboard, meta: {loginRequired: true}},
         {path: BASE_URL_PATH + '/:pathMatch(.*)*', component: Page404}
     ]
 

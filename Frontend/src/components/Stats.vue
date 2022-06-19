@@ -15,7 +15,13 @@
   <div class="plate stats scrollable">
     <div class="title">Котировки</div>
     <div v-for="cur in currencies" class="currency">
-      <Currency :symbol="cur.symbol" :percents="cur.percents" :value="cur.rate" :name="cur.name" :plainRender="true"></Currency>
+      <Currency
+          :symbol="cur.symbol"
+          :percents="cur.percents"
+          :value="cur.rate"
+          :name="cur.name"
+          :plainRender="true"
+      ></Currency>
     </div>
   </div>
 </template>

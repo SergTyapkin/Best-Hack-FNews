@@ -11,8 +11,9 @@
     "dist": "npx webpack-cli build --mode production"
   },
   "dependencies": {
-    "ace-builds": "^1.4.14",
+    "fusioncharts": "^3.18.0",
     "vue": "^3.2.31",
+    "vue-fusioncharts": "^3.2.0",
     "vue-router": "^4.0.14",
     "vuex": "^4.0.2"
   },

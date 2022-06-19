@@ -8,6 +8,7 @@ height = 20%
   display flex
   align-items center
   justify-content space-between
+  overflow-x scroll
 
   .logo
     width 200px
@@ -60,7 +61,7 @@ height = 20%
 </style>
 
 <template>
-  <div class="toolbar">
+  <div class="toolbar scrollable">
     <router-link to="/"><img class="logo" src="../res/logo.svg" alt="Logo" /></router-link>
     <div class="right-container">
       <div class="abs-container">
@@ -70,6 +71,7 @@ height = 20%
 
       <router-link to="#" class="icon"><img src="../res/bell.svg" alt="" /></router-link>
       <router-link to="/" class="icon"><img src="../res/news.svg" alt="" /></router-link>
+      <router-link to="/dashboard" class="icon"><img src="../res/monitoring.svg" alt="" /></router-link>
       <router-link to="/exchange" class="icon"><img src="../res/exchange.svg" alt="" /></router-link>
       <router-link to="/profile" class="icon"><img src="../res/profile.svg" alt="" /></router-link>
     </div>

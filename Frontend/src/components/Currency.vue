@@ -20,6 +20,7 @@
     border-radius radius
     background bg
     transition background 0.2s ease
+    min-width 180px
   .currency:not(.plain):hover
     background mix(bg, white, 80%)
   .currency.selected

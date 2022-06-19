@@ -381,6 +381,8 @@ export default {
 
 
       if (this.selectedCurrency) {
+        if (this.$refs.currencies[idx] === this.selectedCurrency)
+          return;
         this.selectedCurrency.isSelected = false;
       }
 

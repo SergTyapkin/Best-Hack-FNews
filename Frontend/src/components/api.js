@@ -185,4 +185,30 @@ export default class Api extends ApiRequest {
     createTopic = (name, keys) => this.post('/topics', {name, keys});
     deleteTopic = (id) => this.delete('/topics', {id});
     updateTopic = (id, name, keys) => this.put('/topics', {id, name, keys});
+
+
+    //stats
+    getLineStats = (name, interval, from) => {
+        return {
+            ok_: true,
+            data: [
+                {
+                    date: '12.32.3',
+                    value: '10000'
+                },
+                {
+                    date: '12.39.3',
+                    value: '23000'
+                },
+                {
+                    date: '11.36.1',
+                    value: '18000'
+                },
+                {
+                    date: '12.08.0',
+                    value: '9000'
+                }
+            ]
+        }
+    }//this.get('/stats/line', {name, interval, from});
 }
