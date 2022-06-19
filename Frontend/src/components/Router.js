@@ -42,7 +42,6 @@ export default function createVueRouter(Store) {
         const loginedRedirect = {
             path: BASE_URL_PATH + '/profile',
         }
-        console.log(from, to);
 
         function smartBasePartRedirect() {
             if (isStartsOnBasePart(to.fullPath))
